@@ -3,4 +3,9 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="colorBGItemFilm">#000</color>
+    <color name="colorTextTitleFilm">#FFFFFF</color>
+    <color name="colorTextOverView">#CECECE</color>
+    <color name="colorBgDetail">#636161</color>
+    <color name="colorBgLauncher">#000</color>
 </resources>

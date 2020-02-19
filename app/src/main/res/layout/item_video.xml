@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorBGItemFilm">
+
+    <com.google.android.youtube.player.YouTubePlayerView
+        android:id="@+id/video_player"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_margin="@dimen/mg_txt_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/mg_txt_title"
+        android:layout_marginBottom="@dimen/mg_txt_title"
+        android:src="@drawable/ic_play_video"
+        app:layout_constraintBottom_toBottomOf="@id/video_player"
+        app:layout_constraintEnd_toEndOf="@id/video_player"
+        app:layout_constraintHeight_percent="0.3"
+        app:layout_constraintStart_toStartOf="@id/video_player"
+        app:layout_constraintTop_toTopOf="@id/video_player" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
