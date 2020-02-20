@@ -6,13 +6,16 @@ import androidx.lifecycle.ViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import thuy.ptithcm.flicks.api.ApiManager
+import thuy.ptithcm.flicks.api.MovieRespositeries
 import thuy.ptithcm.flicks.model.Movie
+import thuy.ptithcm.flicks.model.Video
+import thuy.ptithcm.flicks.model.Youtube
 
 class MovieViewmodel : ViewModel() {
 
     val listMovieLiveData = MutableLiveData<List<Movie>>().apply { value = mutableListOf() }
-    private val apiManager: ApiManager by lazy { ApiManager() }
+    val listTrailerLiveData = MutableLiveData<List<Youtube>>().apply { value = mutableListOf() }
+    private val apiManager: MovieRespositeries by lazy { MovieRespositeries() }
 
     // CompositeDisposable dùng để quản lý Disposable, được sinh ra để chứa tất cả các Disposable
     // Disposable: là một Subscription mới
@@ -22,7 +25,7 @@ class MovieViewmodel : ViewModel() {
     init {
         Log.d("ptumang", "co khoi tao")
         //if (listMovieLiveData.value.isNullOrEmpty())
-            getMovie()
+        getMovie()
     }
 
     fun getMovie() {
@@ -31,11 +34,21 @@ class MovieViewmodel : ViewModel() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    listMovieLiveData.value = it
-                    Log.d("ptumang", it.size.toString()+"getmovie")
+                    listMovieLiveData.value = it.results
                 }, {
+                })
+        )
+    }
 
-    })
+    fun getTrailer(id: Int) {
+        composite.add(
+            apiManager.getMovieInfor(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    listTrailerLiveData.value = it.youtube
+                }, {
+                })
         )
     }
 

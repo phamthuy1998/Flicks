@@ -22,6 +22,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/mg_txt_title"
         android:layout_marginEnd="@dimen/mg_txt_title"
+        android:ellipsize="end"
+        android:inputType="none"
+        android:maxLines="2"
         android:text="@string/tv_title_film"
         android:textColor="@color/colorTextTitleFilm"
         android:textSize="24sp"
@@ -32,13 +35,18 @@
 
     <TextView
         android:id="@+id/tv_overview_poster"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="@dimen/mg_txt_title"
+        android:ellipsize="end"
+        android:inputType="none"
+        android:maxLines="5"
+        android:paddingBottom="@dimen/mg_txt_title"
         android:text="@string/overview"
         android:textColor="@color/colorTextOverView"
         android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_poster"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tv_title_poster"
         app:layout_constraintTop_toBottomOf="@id/tv_title_poster" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,10 +6,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import thuy.ptithcm.flicks.R
 import thuy.ptithcm.flicks.model.Movie
+import android.util.Log
+import thuy.ptithcm.flicks.model.Youtube
+
 
 class MovieAdapter(
     private val context: Context,
-    private var items: List<Movie>?
+    private var listMovieInfor: List<Movie>? = null,
+//    private var listYoutube: List<Youtube>? = null,
+    val listener: (id: Int, position : Int) -> Unit
 ) :
     RecyclerView.Adapter<BaseViewHolder<*>>() {
     companion object {
@@ -22,24 +27,37 @@ class MovieAdapter(
             TYPE_POSTER -> {
                 val view = LayoutInflater.from(context)
                     .inflate(R.layout.item_poster, parent, false)
-                PosterViewHolder(view)
+                PosterViewHolder(context, view)
             }
             TYPE_VIDEO -> {
                 val view = LayoutInflater.from(context)
                     .inflate(R.layout.item_video, parent, false)
-                VideoViewHolder(view)
+                VideoViewHolder(context, view, listener)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
 
     fun updateData(list: List<Movie>) {
-        items = list
+        listMovieInfor = list
+        notifyDataSetChanged()
+    }
+//
+//    fun updateYouTube(list: List<Youtube>) {
+//        listMovieInfor = list
+//        notifyDataSetChanged()
+//    }
+
+    fun clear() {
+        with(listMovieInfor) {
+            clear()
+        }
         notifyDataSetChanged()
     }
 
     override fun getItemViewType(position: Int): Int {
-        val comparable = items?.get(position)?.vote_average
+        val comparable = listMovieInfor?.get(position)?.vote_average
+        Log.d("fieldtyppe", comparable.toString())
         if (comparable != null) {
             return when {
                 comparable <= 5 -> TYPE_POSTER
@@ -50,11 +68,11 @@ class MovieAdapter(
     }
 
     override fun getItemCount(): Int {
-        return items!!.size
+        return listMovieInfor!!.size
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
-        val element = items?.get(position)
+        val element = listMovieInfor?.get(position)
         when (holder) {
             is PosterViewHolder -> element?.let { holder.bind(it) }
             is VideoViewHolder -> element?.let { holder.bind(it) }

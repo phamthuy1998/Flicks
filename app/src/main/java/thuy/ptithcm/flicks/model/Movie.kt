@@ -2,13 +2,38 @@ package thuy.ptithcm.flicks.model
 
 import com.google.gson.annotations.SerializedName
 
+data class MovieList(
+    @SerializedName("dates")
+    val dates: Dates?,
+
+    @SerializedName("page")
+    val page: Int?,
+
+    @SerializedName("results")
+    val results: List<Movie>?,
+
+    @SerializedName("total_pages")
+    val total_pages: Int?,
+
+    @SerializedName("total_results")
+    val total_results: Int?
+)
+
+data class Dates(
+    @SerializedName("maximum")
+    val maximum: String?,
+    @SerializedName("minimum")
+    val minimum: String?
+)
 
 data class Movie(
     @SerializedName("adult")
-    val adult: Boolean,
+    val adult: Boolean?,
+
+    var listYoutube: List<Youtube>?=null,
 
     @SerializedName("backdrop_path")
-    val backdrop_path: String,
+    val backdrop_path: String?,
 
     @SerializedName("genre_ids")
     val genre_ids: List<Int>?,

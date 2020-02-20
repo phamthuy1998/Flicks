@@ -7,7 +7,16 @@ import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import thuy.ptithcm.flicks.R
 
-class DetailFilmActivity :  YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener {
+class DetailPosterFilmActivity :  YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener {
+
+    companion object {
+        private var instance: DetailPosterFilmActivity? = null
+        fun getInstance(): DetailPosterFilmActivity {
+            if (instance == null) instance = DetailPosterFilmActivity()
+            return instance!!
+        }
+    }
+
     override fun onInitializationFailure(
         p0: YouTubePlayer.Provider?,
         p1: YouTubeInitializationResult?
