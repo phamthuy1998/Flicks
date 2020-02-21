@@ -6,13 +6,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import thuy.ptithcm.flicks.R
 import thuy.ptithcm.flicks.model.Movie
 import thuy.ptithcm.flicks.viewmodel.TrailerViewmodel
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerFragment
 import com.google.android.youtube.player.YouTubePlayerView
+import thuy.ptithcm.flicks.R
 import thuy.ptithcm.flicks.model.Youtube
 import thuy.ptithcm.flicks.utils.YOUTUBE_API
 
@@ -43,21 +43,10 @@ class DetailPosterFilmActivity : AppCompatActivity() {
         setContentView(R.layout.activity_detail_film)
         movie = intent?.getParcelableExtra("movie")
 
-        showVideo()
+        binding()
 
-        movie?.id?.let { trailerViewModel.getTrailer(it) }
-        trailerViewModel.listTrailerLiveData.observe(this, Observer {
-            if (!it.isNullOrEmpty()) {
-                listTrailer = it
-                youTubePlayers.cueVideo(it.get(0).source)
-            }
-        })
-    }
-
-    fun showVideo() {
         val youTubePlayerView =
             findViewById(thuy.ptithcm.flicks.R.id.movie_player_detail) as YouTubePlayerView
-
         youTubePlayerView.initialize(
             YOUTUBE_API,
             object : YouTubePlayer.OnInitializedListener {
@@ -81,5 +70,17 @@ class DetailPosterFilmActivity : AppCompatActivity() {
                     ).show()
                 }
             })
+
+        movie?.id?.let { trailerViewModel.getTrailer(it) }
+
+    }
+
+    fun binding(){
+        trailerViewModel.listTrailerLiveData.observe(this, Observer {
+            if (!it.isNullOrEmpty()) {
+                listTrailer = it
+                youTubePlayers.cueVideo(it.get(0).source)
+            }
+        })
     }
 }
