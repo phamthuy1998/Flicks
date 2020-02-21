@@ -1,5 +1,6 @@
 package thuy.ptithcm.flicks.activity
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -9,6 +10,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import thuy.ptithcm.flicks.R
 import thuy.ptithcm.flicks.adapter.MovieAdapter
@@ -18,9 +20,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerView
+import thuy.ptithcm.flicks.adapter.MovieAdapterEvent
+import thuy.ptithcm.flicks.adapter.OnLoadMoreListener
+import thuy.ptithcm.flicks.adapter.RecyclerViewLoadMoreScroll
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MovieAdapterEvent {
+
 
     companion object {
         private var instance: MainActivity? = null
@@ -31,13 +37,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private var listMovies: List<Movie>? = null
-    private var positionMovie = 0
+    private var listLoadMore: List<Movie>? = null
     private val movieAdapter: MovieAdapter by lazy {
-        MovieAdapter(this) { id, po ->
-            movieViewModel.getTrailer(id)
-            positionMovie = po
-        }
+        MovieAdapter(this, listMovies, this)
     }
+
+    private var page: Int = 1
 
     val movieViewModel: MovieViewmodel by lazy {
         ViewModelProviders
@@ -45,19 +50,48 @@ class MainActivity : AppCompatActivity() {
             .get(MovieViewmodel::class.java)
     }
 
+
+    lateinit var mLayoutManager: RecyclerView.LayoutManager
+    lateinit var scrollListener: RecyclerViewLoadMoreScroll
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        // val binding = ActivityMainBinding.inflate(layoutInflater)
-//        val binding: ActivityMainBinding =
-//            DataBindingUtil.setContentView(this, R.layout.activity_main)
-//        binding.movieViewModel = movieViewModel
-//        // Specify the current activity as the lifecycle owner.
-//        binding.lifecycleOwner = this@MainActivity
-
+        movieViewModel.getMovie(page)
         addHanding()
         addEvent()
+        setRVScrollListener()
+    }
 
+    private fun setRVScrollListener() {
+        mLayoutManager = LinearLayoutManager(this)
+        scrollListener = RecyclerViewLoadMoreScroll(mLayoutManager as LinearLayoutManager)
+        scrollListener.setOnLoadMoreListener(object : OnLoadMoreListener {
+            override fun onLoadMore() {
+                LoadMoreData()
+            }
+        })
+        rv_movies.addOnScrollListener(scrollListener)
+    }
+
+    private fun LoadMoreData() {
+//        movieAdapter.addLoadingView()
+//
+//        movieAdapter.removeLoadingView()
+        page++
+        Log.d("ptumang", page.toString()+ "page")
+        movieViewModel.getMovie(page)
+        scrollListener.setLoaded()
+        //Update the recyclerView in the main thread
+        rv_movies.post {
+            movieAdapter.notifyDataSetChanged()
+        }
+    }
+
+    override fun onItemMovieClick(item: Movie?) {
+        val intent = Intent(this, DetailPosterFilmActivity.getInstance().javaClass)
+        intent.putExtra("movie", item)
+        startActivity(intent)
     }
 
     private fun addHanding() {
@@ -65,19 +99,23 @@ class MainActivity : AppCompatActivity() {
             rv_movies.adapter = movieAdapter
             rv_movies.layoutManager = LinearLayoutManager(context)
         }
+        rv_movies.setHasFixedSize(true)
 
         movieViewModel.listMovieLiveData.observe(this, Observer {
-            listMovies =it
+            listMovies = it
+           // movieViewModel.getMovie(page)
             movieAdapter.updateData(it)
-            Log.d("ptumang", listMovies.toString() + "asdahsdhhd")
+            Log.d("ptumang", it.size.toString() + "asdahsdhhd")
+
         })
 
-            movieViewModel.listTrailerLiveData.observe(this, Observer { listYouTube ->
-                listMovies?.getOrNull(positionMovie)?.listYoutube = listYouTube
-                Log.d("aaaa", listMovies?.toString())
-                listMovies?.let { movieAdapter.updateData(it) }
-
-            })
+        //List youtube observe
+//        movieViewModel.listTrailerLiveData.observe(this, Observer { listYouTube ->
+//            listMovies?.getOrNull(positionMovie)?.listYoutube = listYouTube
+//            Log.d("aaaa", listMovies?.toString())
+//            listMovies?.let { movieAdapter.updateData(it) }
+//
+//        })
 
 
         // Configure the refreshing colors
@@ -91,6 +129,7 @@ class MainActivity : AppCompatActivity() {
             // Your code to refresh the list here.
             // Make sure you call swipeContainer.setRefreshing(false)
             // once the network request has completed successfully.
+
             movieViewModel.reFresh()
             val handle = Handler()
             handle.postDelayed(

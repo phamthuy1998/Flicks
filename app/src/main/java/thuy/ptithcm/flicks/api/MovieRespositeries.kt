@@ -7,12 +7,11 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import thuy.ptithcm.flicks.model.Movie
 import thuy.ptithcm.flicks.utils.BASE_URL
 import okhttp3.OkHttpClient
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import thuy.ptithcm.flicks.model.MovieList
-import thuy.ptithcm.flicks.model.Video
+import thuy.ptithcm.flicks.model.Trailer
 
 class MovieRespositeries {
 
@@ -70,11 +69,11 @@ class MovieRespositeries {
         }
     }
 
-    fun getListMovie(): Single<MovieList> {
-        return buildRequest(_myApi.getListMovie())
+    fun getListMovie(page: Int= 1): Single<MovieList> {
+        return buildRequest(_myApi.getListMovie(page = page))
     }
 
-    fun getMovieInfor(id: Int): Single<Video> {
-        return buildRequest(_myApi.getMovieInfor(id))
+    fun getMovieInfor(id: Int): Single<Trailer> {
+        return buildRequest(_myApi.getMovieInforVideo(id))
     }
 }

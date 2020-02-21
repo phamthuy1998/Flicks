@@ -1,6 +1,8 @@
 package thuy.ptithcm.flicks.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class MovieList(
     @SerializedName("dates")
@@ -26,11 +28,10 @@ data class Dates(
     val minimum: String?
 )
 
+@Parcelize
 data class Movie(
     @SerializedName("adult")
     val adult: Boolean?,
-
-    var listYoutube: List<Youtube>?=null,
 
     @SerializedName("backdrop_path")
     val backdrop_path: String?,
@@ -70,4 +71,4 @@ data class Movie(
 
     @SerializedName("vote_count")
     val vote_count: Int?
-)
+):Parcelable

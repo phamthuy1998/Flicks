@@ -3,25 +3,17 @@ package thuy.ptithcm.flicks.adapter
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Bitmap
-import android.util.Log
 import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.item_video.view.*
 import thuy.ptithcm.flicks.model.Movie
-import com.google.android.youtube.player.YouTubeInitializationResult
-import com.google.android.youtube.player.YouTubePlayer
-import com.google.android.youtube.player.YouTubePlayerFragment
-import com.google.android.youtube.player.YouTubePlayerView
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation
-import kotlinx.android.synthetic.main.item_poster.view.*
-import thuy.ptithcm.flicks.model.Youtube
 import thuy.ptithcm.flicks.utils.IMAGE_URL
-import thuy.ptithcm.flicks.utils.YOUTUBE_API
 
 
-class VideoViewHolder(val context: Context, itemView: View, val listener: (id: Int, position : Int) -> Unit) :
+class VideoViewHolder(val movieAdapterEvent: MovieAdapterEvent,val context: Context, itemView: View) :
     BaseViewHolder<View>(itemView) {
     override fun bind(movie: Movie?) {
 
@@ -29,11 +21,6 @@ class VideoViewHolder(val context: Context, itemView: View, val listener: (id: I
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             itemView.tv_title_video?.text = movie?.title
             itemView.tv_overview_video?.text = movie?.overview
-        }
-
-        itemView.iv_trailer.setOnClickListener {
-            movie?.id?.let { it1 -> listener(it1,adapterPosition) }
-
         }
 
         //set image rounded
@@ -45,8 +32,10 @@ class VideoViewHolder(val context: Context, itemView: View, val listener: (id: I
             .apply(RequestOptions.bitmapTransform(multi))
             .into(itemView.iv_trailer)
 
+        itemView.setOnClickListener {
+            movieAdapterEvent.onItemMovieClick(movie)
+        }
 
-        Log.d("sizeArr",movie?.listYoutube?.size.toString())
 //        val youTubePlayerView =
 //            itemView.findViewById(thuy.ptithcm.flicks.R.id.youtube_player) as YouTubePlayerView
 //

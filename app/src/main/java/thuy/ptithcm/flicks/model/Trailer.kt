@@ -2,7 +2,7 @@ package thuy.ptithcm.flicks.model
 
 import com.google.gson.annotations.SerializedName
 
-data class Video(
+data class Trailer(
     @SerializedName("id")
     val id: Int?,
 
