@@ -1,22 +1,21 @@
 package thuy.ptithcm.flicks.activity
 
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import thuy.ptithcm.flicks.model.Movie
-import thuy.ptithcm.flicks.viewmodel.TrailerViewmodel
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerFragment
-import com.google.android.youtube.player.YouTubePlayerView
+import kotlinx.android.synthetic.main.activity_detail_film.*
 import thuy.ptithcm.flicks.R
+import thuy.ptithcm.flicks.model.Movie
 import thuy.ptithcm.flicks.model.Youtube
-import thuy.ptithcm.flicks.utils.YOUTUBE_API
+import thuy.ptithcm.flicks.viewmodel.TrailerViewmodel
+
 
 class DetailPosterFilmActivity : AppCompatActivity() {
+    lateinit var youTubePlayerG: YouTubePlayer
 
     companion object {
         private var instance: DetailPosterFilmActivity? = null
@@ -28,7 +27,6 @@ class DetailPosterFilmActivity : AppCompatActivity() {
 
 
     private var listTrailer: List<Youtube>? = null
-    private lateinit var youTubePlayers: YouTubePlayer
 
     val trailerViewModel: TrailerViewmodel by lazy {
         ViewModelProviders
@@ -41,46 +39,43 @@ class DetailPosterFilmActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_film)
+
+
+
         movie = intent?.getParcelableExtra("movie")
+        val youtubeFragment = fragmentManager.findFragmentById(R.id.youtubeFragment) as YouTubePlayerFragment
+        bindings()
 
-        binding()
 
-        val youTubePlayerView =
-            findViewById(thuy.ptithcm.flicks.R.id.movie_player_detail) as YouTubePlayerView
-        youTubePlayerView.initialize(
-            YOUTUBE_API,
+        youtubeFragment.initialize("YOUR API KEY",
             object : YouTubePlayer.OnInitializedListener {
                 override fun onInitializationSuccess(
                     provider: YouTubePlayer.Provider,
                     youTubePlayer: YouTubePlayer, b: Boolean
-                ) {
-                    youTubePlayers = youTubePlayer
+                ) { // do any work here to
+                    youTubePlayerG = youTubePlayer
+
                     movie?.id?.let { trailerViewModel.getTrailer(it) }
-                    //  youTubePlayer.cueVideo(listTrailer?.get(0)?.source)
+
+//                    youTubePlayer.cueVideo("5xVh-7ywKpE")
                 }
 
                 override fun onInitializationFailure(
                     provider: YouTubePlayer.Provider,
                     youTubeInitializationResult: YouTubeInitializationResult
                 ) {
-                    Toast.makeText(
-                        applicationContext,
-                        getString(R.string.err_load_video),
-                        Toast.LENGTH_LONG
-                    ).show()
                 }
             })
 
-        movie?.id?.let { trailerViewModel.getTrailer(it) }
 
     }
 
-    fun binding(){
+    private fun bindings() {
         trailerViewModel.listTrailerLiveData.observe(this, Observer {
-            if (!it.isNullOrEmpty()) {
-                listTrailer = it
-                youTubePlayers.cueVideo(it.get(0).source)
+            if (!it.isNullOrEmpty()){
+                youTubePlayerG.cueVideo(it[0].source)
             }
-        })
-    }
+        })}
+
+
 }
