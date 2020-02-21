@@ -1,5 +1,6 @@
 package thuy.ptithcm.flicks.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -49,54 +50,24 @@ class DetailPosterFilmActivity : AppCompatActivity() {
         movie?.id?.let { trailerViewModel.getTrailer(it) }
         Log.d("aaaa","bbbb"+trailerViewModel.listTrailerLiveData.toString())
         trailerViewModel.listTrailerLiveData.observe(this, Observer {
+//            if (!it.isNullOrEmpty()){
+//                listTrailer = it
+//                showVideo(it)
+//            }
             if (!it.isNullOrEmpty()){
-                listTrailer = it
-                showVideo(it)
+                val intent = Intent(this, QuickPlayActivity::class.java)
+                intent.putExtra("ID_VIDEO", it.firstOrNull()?.source)
+                intent.putExtra("MOVIE",movie)
+                startActivity(intent)
             }
+            else{
+                return@Observer
+            }
+
         })
 
-        // do any work here to cue video, play video, etc.
-        Log.d("aaaa",listTrailer?.get(0)?.source.toString())
 
 
-//
-//    override fun onInitializationSuccess(
-//        provider: YouTubePlayer.Provider,
-//        youTubePlayer: YouTubePlayer, b: Boolean
-//    ) {
-//        // do any work here to cue video, play video, etc.
-//        youTubePlayer.cueVideo("5xVh-7ywKpE")
-////
-//    }
-//
-//    override fun onInitializationFailure(
-//        provider: YouTubePlayer.Provider,
-//        youTubeInitializationResult: YouTubeInitializationResult
-//    ) {
-//
     }
 
-    fun showVideo(listTrailer : List<Youtube>){
-        val youTubePlayerView =
-            findViewById(thuy.ptithcm.flicks.R.id.movie_player_detail) as YouTubePlayerView
-
-        youTubePlayerView.initialize(
-            YOUTUBE_API,
-            object : YouTubePlayer.OnInitializedListener {
-                override fun onInitializationSuccess(
-                    provider: YouTubePlayer.Provider,
-                    youTubePlayer: YouTubePlayer, b: Boolean
-                ) {
-
-                    youTubePlayer.cueVideo(listTrailer?.get(0)?.source)
-                }
-
-                override fun onInitializationFailure(
-                    provider: YouTubePlayer.Provider,
-                    youTubeInitializationResult: YouTubeInitializationResult
-                ) {
-                    Toast.makeText(applicationContext,getString(R.string.err_load_video),Toast.LENGTH_LONG).show()
-                }
-            })
-    }
 }
