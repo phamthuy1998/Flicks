@@ -5,8 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import android.widget.LinearLayout
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,18 +14,12 @@ import thuy.ptithcm.flicks.R
 import thuy.ptithcm.flicks.adapter.MovieAdapter
 import thuy.ptithcm.flicks.model.Movie
 import thuy.ptithcm.flicks.viewmodel.MovieViewmodel
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.youtube.player.YouTubeInitializationResult
-import com.google.android.youtube.player.YouTubePlayer
-import com.google.android.youtube.player.YouTubePlayerView
 import thuy.ptithcm.flicks.adapter.MovieAdapterEvent
 import thuy.ptithcm.flicks.adapter.OnLoadMoreListener
 import thuy.ptithcm.flicks.adapter.RecyclerViewLoadMoreScroll
-import thuy.ptithcm.flicks.model.Youtube
 
 
 class MainActivity : AppCompatActivity(), MovieAdapterEvent {
-
 
     companion object {
         private var instance: MainActivity? = null
@@ -38,7 +30,6 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
     }
 
     private var listMovies: List<Movie>? = null
-    private var listTrailer: List<Youtube>? = null
     private val movieAdapter: MovieAdapter by lazy {
         MovieAdapter(this, listMovies, this)
     }
@@ -58,7 +49,7 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        addHanding()
+        binding()
         addEvent()
         setRVLayoutManager()
         setRVScrollListener()
@@ -83,32 +74,30 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
 
     private fun LoadMoreData() {
         movieAdapter.addLoadingView()
-//
         movieAdapter.removeLoadingView()
         page++
-        Log.d("ptumang", page.toString()+ "page")
+        Log.d("ptumang", page.toString() + "page")
         movieViewModel.getMovie(page)
         scrollListener.setLoaded()
-        //Update the recyclerView in the main thread
         rv_movies.post {
             movieAdapter.notifyDataSetChanged()
         }
     }
 
     override fun onItemMovieClick(item: Movie?) {
-
         val intent = Intent(this, DetailPosterFilmActivity.getInstance().javaClass)
-
-
-        if (item != null) {
-            intent.putExtra("movie", item)
-            item.id?.let { movieViewModel.getTrailer(it) }
-
-        }
+        intent.putExtra("movie", item)
         startActivity(intent)
     }
 
-    private fun addHanding() {
+    override fun onMoviePopularClick(item: Movie?) {
+        val intent = Intent(this, DetailPosterFilmActivity.getInstance().javaClass)
+        intent.putExtra("movie", item)
+        intent.putExtra("play", true)
+        startActivity(intent)
+    }
+
+    private fun binding() {
         rv_movies.run {
             rv_movies.adapter = movieAdapter
             rv_movies.layoutManager = LinearLayoutManager(context)
@@ -117,7 +106,7 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
 
         movieViewModel.listMovieLiveData.observe(this, Observer {
             listMovies = it
-           // movieViewModel.getMovie(page)
+            // movieViewModel.getMovie(page)
             movieAdapter.updateData(it)
             Log.d("ptumang", it.size.toString() + "asdahsdhhd")
 
@@ -130,16 +119,6 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
             Log.d("ptumang", it.size.toString() + "asdahsdhhd")
 
         })
-
-        //List youtube observe
-//        movieViewModel.listTrailerLiveData.observe(this, Observer { listYouTube ->
-//            listMovies?.getOrNull(positionMovie)?.listYoutube = listYouTube
-//            Log.d("aaaa", listMovies?.toString())
-//            listMovies?.let { movieAdapter.updateData(it) }
-//
-//        })
-
-
         // Configure the refreshing colors
         swipeContainer.setColorSchemeResources(
             android.R.color.holo_blue_dark
@@ -148,10 +127,6 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
 
     private fun addEvent() {
         swipeContainer.setOnRefreshListener {
-            // Your code to refresh the list here.
-            // Make sure you call swipeContainer.setRefreshing(false)
-            // once the network request has completed successfully.
-
             movieViewModel.reFresh()
             val handle = Handler()
             handle.postDelayed(

@@ -35,17 +35,20 @@ class DetailPosterFilmActivity : AppCompatActivity() {
     }
 
     private var movie: Movie? = null
+    private var playVideo = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_film)
-
-
-
         movie = intent?.getParcelableExtra("movie")
-        val youtubeFragment = fragmentManager.findFragmentById(R.id.youtubeFragment) as YouTubePlayerFragment
+        playVideo = intent?.getBooleanExtra("play", false) ?: false
+
+        val youtubeFragment =
+            fragmentManager.findFragmentById(R.id.movie_player_detail) as YouTubePlayerFragment
+
         bindings()
 
+        setInforMovie(movie)
 
         youtubeFragment.initialize("YOUR API KEY",
             object : YouTubePlayer.OnInitializedListener {
@@ -56,8 +59,6 @@ class DetailPosterFilmActivity : AppCompatActivity() {
                     youTubePlayerG = youTubePlayer
 
                     movie?.id?.let { trailerViewModel.getTrailer(it) }
-
-//                    youTubePlayer.cueVideo("5xVh-7ywKpE")
                 }
 
                 override fun onInitializationFailure(
@@ -66,16 +67,20 @@ class DetailPosterFilmActivity : AppCompatActivity() {
                 ) {
                 }
             })
+    }
 
-
+    private fun setInforMovie(movie: Movie?) {
+        tv_title_detail.text = movie?.original_title
+        rating_film.numStars = movie?.vote_average?.toInt() ?: 0
+        val date_release = getString(R.string.release_date) + " " + movie?.release_date
+        tv_release_date.text = date_release
     }
 
     private fun bindings() {
         trailerViewModel.listTrailerLiveData.observe(this, Observer {
-            if (!it.isNullOrEmpty()){
+            if (!it.isNullOrEmpty()) {
                 youTubePlayerG.cueVideo(it[0].source)
             }
-        })}
-
-
+        })
+    }
 }

@@ -18,12 +18,6 @@ class TrailerViewmodel() : ViewModel() {
 
     private val composite by lazy { CompositeDisposable() }
 
-//    init {
-//        Log.d("ptumang", "co khoi tao")
-//        if (listTrailerLiveData.value.isNullOrEmpty())
-//            movie?.id?.let { getTrailer(it) }
-//    }
-
     fun getTrailer( id:Int) {
         composite.add(
             apiManager.getMovieInfor(id)
@@ -36,7 +30,4 @@ class TrailerViewmodel() : ViewModel() {
         )
     }
 
-//    fun reFresh() {
-//        movie?.id?.let { getTrailer(it) }
-//    }
 }

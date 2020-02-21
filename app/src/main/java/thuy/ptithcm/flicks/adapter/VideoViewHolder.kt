@@ -33,30 +33,7 @@ class VideoViewHolder(val movieAdapterEvent: MovieAdapterEvent,val context: Cont
             .into(itemView.iv_trailer)
 
         itemView.setOnClickListener {
-            movieAdapterEvent.onItemMovieClick(movie)
+            movieAdapterEvent.onMoviePopularClick(movie)
         }
-
-//        val youTubePlayerView =
-//            itemView.findViewById(thuy.ptithcm.flicks.R.id.youtube_player) as YouTubePlayerView
-//
-//        youTubePlayerView.initialize(
-//            YOUTUBE_API,
-//            object : YouTubePlayer.OnInitializedListener {
-//                override fun onInitializationSuccess(
-//                    provider: YouTubePlayer.Provider,
-//                    youTubePlayer: YouTubePlayer, b: Boolean
-//                ) {
-//
-//                    // do any work here to cue video, play video, etc.
-//                    youTubePlayer.cueVideo(list?.get(0)?.source)
-//                }
-//
-//                override fun onInitializationFailure(
-//                    provider: YouTubePlayer.Provider,
-//                    youTubeInitializationResult: YouTubeInitializationResult
-//                ) {
-//
-//                }
-//            })
     }
 }

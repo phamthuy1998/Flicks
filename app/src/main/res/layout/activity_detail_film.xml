@@ -54,6 +54,7 @@
             app:layout_constraintTop_toBottomOf="@id/tv_title_detail" />
 
         <RatingBar
+            android:isIndicator="true"
             android:id="@+id/rating_film"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -75,7 +76,7 @@
             app:layout_constraintTop_toBottomOf="@id/rating_film">
 
             <TextView
-                android:id="@+id/tv_overView_detail"
+                android:id="@+id/tv_release_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/mg_txt_title"
