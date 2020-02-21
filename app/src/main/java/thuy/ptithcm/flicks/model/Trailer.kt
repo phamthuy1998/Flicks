@@ -1,6 +1,8 @@
 package thuy.ptithcm.flicks.model
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class Trailer(
     @SerializedName("id")
@@ -12,7 +14,7 @@ data class Trailer(
     @SerializedName("youtube")
     val youtube: List<Youtube>?
 )
-
+@Parcelize
 data class Youtube(
     @SerializedName("name")
     val name: String?,
@@ -25,4 +27,4 @@ data class Youtube(
 
     @SerializedName("type")
     val type: String?
-)
+): Parcelable

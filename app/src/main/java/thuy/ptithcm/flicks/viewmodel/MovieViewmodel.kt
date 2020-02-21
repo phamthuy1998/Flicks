@@ -8,10 +8,12 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import thuy.ptithcm.flicks.api.MovieRespositeries
 import thuy.ptithcm.flicks.model.Movie
+import thuy.ptithcm.flicks.model.Youtube
 
 class MovieViewmodel : ViewModel() {
 
     val listMovieLiveData = MutableLiveData<List<Movie>>().apply { value = listOf() }
+    val listTrailerLiveData = MutableLiveData<List<Youtube>>().apply { value = mutableListOf() }
     private val apiManager: MovieRespositeries by lazy { MovieRespositeries() }
 
     // CompositeDisposable dùng để quản lý Disposable, được sinh ra để chứa tất cả các Disposable
@@ -36,13 +38,18 @@ class MovieViewmodel : ViewModel() {
                         it.results.forEach { listTempt.add(it) }
                         listMovieLiveData.postValue(listTempt)
                     }
+                }, {
+                })
+        )
+    }
 
-//                    if (listMovieLiveData.value.isNullOrEmpty())
-//                        listMovieLiveData.value = it.results
-//                    else//load more
-//                    {
-//                       listMovieLiveData.postValue(it.results)
-//                    }
+    fun getTrailer( id:Int) {
+        composite.add(
+            apiManager.getMovieInfor(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    listTrailerLiveData.value = it.youtube
                 }, {
                 })
         )

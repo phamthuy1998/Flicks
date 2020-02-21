@@ -60,7 +60,6 @@ class MovieRespositeries {
                     }
                 }
 
-
                 override fun onFailure(p0: Call<T>, response: Throwable) {
                     // server tra ve dinh dang loi nhu the nao cho  nguoi dung
                     it.onError(response)

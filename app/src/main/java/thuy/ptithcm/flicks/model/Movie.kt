@@ -33,6 +33,8 @@ data class Movie(
     @SerializedName("adult")
     val adult: Boolean?,
 
+    val listVideo: List<Youtube>?=null,
+
     @SerializedName("backdrop_path")
     val backdrop_path: String?,
 

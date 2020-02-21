@@ -23,6 +23,7 @@ import com.google.android.youtube.player.YouTubePlayerView
 import thuy.ptithcm.flicks.adapter.MovieAdapterEvent
 import thuy.ptithcm.flicks.adapter.OnLoadMoreListener
 import thuy.ptithcm.flicks.adapter.RecyclerViewLoadMoreScroll
+import thuy.ptithcm.flicks.model.Youtube
 
 
 class MainActivity : AppCompatActivity(), MovieAdapterEvent {
@@ -37,7 +38,7 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
     }
 
     private var listMovies: List<Movie>? = null
-    private var listLoadMore: List<Movie>? = null
+    private var listTrailer: List<Youtube>? = null
     private val movieAdapter: MovieAdapter by lazy {
         MovieAdapter(this, listMovies, this)
     }
@@ -95,8 +96,15 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
     }
 
     override fun onItemMovieClick(item: Movie?) {
+
         val intent = Intent(this, DetailPosterFilmActivity.getInstance().javaClass)
-        intent.putExtra("movie", item)
+
+
+        if (item != null) {
+            intent.putExtra("movie", item)
+            item.id?.let { movieViewModel.getTrailer(it) }
+
+        }
         startActivity(intent)
     }
 
@@ -110,6 +118,14 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
         movieViewModel.listMovieLiveData.observe(this, Observer {
             listMovies = it
            // movieViewModel.getMovie(page)
+            movieAdapter.updateData(it)
+            Log.d("ptumang", it.size.toString() + "asdahsdhhd")
+
+        })
+
+        movieViewModel.listMovieLiveData.observe(this, Observer {
+            listMovies = it
+            // movieViewModel.getMovie(page)
             movieAdapter.updateData(it)
             Log.d("ptumang", it.size.toString() + "asdahsdhhd")
 

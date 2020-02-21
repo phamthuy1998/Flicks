@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import thuy.ptithcm.flicks.R
@@ -16,7 +15,6 @@ import com.google.android.youtube.player.YouTubePlayerFragment
 import com.google.android.youtube.player.YouTubePlayerView
 import thuy.ptithcm.flicks.model.Youtube
 import thuy.ptithcm.flicks.utils.YOUTUBE_API
-
 
 class DetailPosterFilmActivity : AppCompatActivity() {
 
@@ -30,6 +28,7 @@ class DetailPosterFilmActivity : AppCompatActivity() {
 
 
     private var listTrailer: List<Youtube>? = null
+    private lateinit var youTubePlayers: YouTubePlayer
 
     val trailerViewModel: TrailerViewmodel by lazy {
         ViewModelProviders
@@ -42,41 +41,20 @@ class DetailPosterFilmActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_film)
-
         movie = intent?.getParcelableExtra("movie")
 
-        Log.d("aaaa",movie.toString())
+        showVideo()
+
         movie?.id?.let { trailerViewModel.getTrailer(it) }
-        Log.d("aaaa","bbbb"+trailerViewModel.listTrailerLiveData.toString())
         trailerViewModel.listTrailerLiveData.observe(this, Observer {
-            if (!it.isNullOrEmpty()){
+            if (!it.isNullOrEmpty()) {
                 listTrailer = it
-                showVideo(it)
+                youTubePlayers.cueVideo(it.get(0).source)
             }
         })
-
-        // do any work here to cue video, play video, etc.
-        Log.d("aaaa",listTrailer?.get(0)?.source.toString())
-
-
-//
-//    override fun onInitializationSuccess(
-//        provider: YouTubePlayer.Provider,
-//        youTubePlayer: YouTubePlayer, b: Boolean
-//    ) {
-//        // do any work here to cue video, play video, etc.
-//        youTubePlayer.cueVideo("5xVh-7ywKpE")
-////
-//    }
-//
-//    override fun onInitializationFailure(
-//        provider: YouTubePlayer.Provider,
-//        youTubeInitializationResult: YouTubeInitializationResult
-//    ) {
-//
     }
 
-    fun showVideo(listTrailer : List<Youtube>){
+    fun showVideo() {
         val youTubePlayerView =
             findViewById(thuy.ptithcm.flicks.R.id.movie_player_detail) as YouTubePlayerView
 
@@ -87,15 +65,20 @@ class DetailPosterFilmActivity : AppCompatActivity() {
                     provider: YouTubePlayer.Provider,
                     youTubePlayer: YouTubePlayer, b: Boolean
                 ) {
-
-                    youTubePlayer.cueVideo(listTrailer?.get(0)?.source)
+                    youTubePlayers = youTubePlayer
+                    movie?.id?.let { trailerViewModel.getTrailer(it) }
+                    //  youTubePlayer.cueVideo(listTrailer?.get(0)?.source)
                 }
 
                 override fun onInitializationFailure(
                     provider: YouTubePlayer.Provider,
                     youTubeInitializationResult: YouTubeInitializationResult
                 ) {
-                    Toast.makeText(applicationContext,getString(R.string.err_load_video),Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        applicationContext,
+                        getString(R.string.err_load_video),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             })
     }
