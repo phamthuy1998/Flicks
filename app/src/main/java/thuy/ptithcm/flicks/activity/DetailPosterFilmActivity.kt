@@ -1,25 +1,21 @@
 package thuy.ptithcm.flicks.activity
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import thuy.ptithcm.flicks.R
-import thuy.ptithcm.flicks.model.Movie
-import thuy.ptithcm.flicks.viewmodel.TrailerViewmodel
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerFragment
-import com.google.android.youtube.player.YouTubePlayerView
+import kotlinx.android.synthetic.main.activity_detail_film.*
+import thuy.ptithcm.flicks.R
+import thuy.ptithcm.flicks.model.Movie
 import thuy.ptithcm.flicks.model.Youtube
-import thuy.ptithcm.flicks.utils.YOUTUBE_API
+import thuy.ptithcm.flicks.viewmodel.TrailerViewmodel
 
 
 class DetailPosterFilmActivity : AppCompatActivity() {
+    lateinit var youTubePlayerG: YouTubePlayer
 
     companion object {
         private var instance: DetailPosterFilmActivity? = null
@@ -44,30 +40,42 @@ class DetailPosterFilmActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_film)
 
+
+
         movie = intent?.getParcelableExtra("movie")
+        val youtubeFragment = fragmentManager.findFragmentById(R.id.youtubeFragment) as YouTubePlayerFragment
+        bindings()
 
-        Log.d("aaaa",movie.toString())
-        movie?.id?.let { trailerViewModel.getTrailer(it) }
-        Log.d("aaaa","bbbb"+trailerViewModel.listTrailerLiveData.toString())
-        trailerViewModel.listTrailerLiveData.observe(this, Observer {
-//            if (!it.isNullOrEmpty()){
-//                listTrailer = it
-//                showVideo(it)
-//            }
-            if (!it.isNullOrEmpty()){
-                val intent = Intent(this, QuickPlayActivity::class.java)
-                intent.putExtra("ID_VIDEO", it.firstOrNull()?.source)
-                intent.putExtra("MOVIE",movie)
-                startActivity(intent)
-            }
-            else{
-                return@Observer
-            }
 
-        })
+        youtubeFragment.initialize("YOUR API KEY",
+            object : YouTubePlayer.OnInitializedListener {
+                override fun onInitializationSuccess(
+                    provider: YouTubePlayer.Provider,
+                    youTubePlayer: YouTubePlayer, b: Boolean
+                ) { // do any work here to
+                    youTubePlayerG = youTubePlayer
 
+                    movie?.id?.let { trailerViewModel.getTrailer(it) }
+
+//                    youTubePlayer.cueVideo("5xVh-7ywKpE")
+                }
+
+                override fun onInitializationFailure(
+                    provider: YouTubePlayer.Provider,
+                    youTubeInitializationResult: YouTubeInitializationResult
+                ) {
+                }
+            })
 
 
     }
+
+    private fun bindings() {
+        trailerViewModel.listTrailerLiveData.observe(this, Observer {
+            if (!it.isNullOrEmpty()){
+                youTubePlayerG.cueVideo(it[0].source)
+            }
+        })}
+
 
 }
