@@ -57,10 +57,16 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        movieViewModel.getMovie(page)
         addHanding()
         addEvent()
+        setRVLayoutManager()
         setRVScrollListener()
+    }
+
+    private fun setRVLayoutManager() {
+        mLayoutManager = LinearLayoutManager(this)
+        rv_movies.layoutManager = mLayoutManager
+        rv_movies.setHasFixedSize(true)
     }
 
     private fun setRVScrollListener() {
@@ -75,9 +81,9 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
     }
 
     private fun LoadMoreData() {
-//        movieAdapter.addLoadingView()
+        movieAdapter.addLoadingView()
 //
-//        movieAdapter.removeLoadingView()
+        movieAdapter.removeLoadingView()
         page++
         Log.d("ptumang", page.toString()+ "page")
         movieViewModel.getMovie(page)

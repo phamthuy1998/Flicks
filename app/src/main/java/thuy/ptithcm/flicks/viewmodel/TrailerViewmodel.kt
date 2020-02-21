@@ -10,21 +10,20 @@ import thuy.ptithcm.flicks.api.MovieRespositeries
 import thuy.ptithcm.flicks.model.Movie
 import thuy.ptithcm.flicks.model.Youtube
 
-class TrailerViewmodel(var movie:Movie) : ViewModel() {
+class TrailerViewmodel() : ViewModel() {
 
     val listTrailerLiveData = MutableLiveData<List<Youtube>>().apply { value = mutableListOf() }
     private val apiManager: MovieRespositeries by lazy { MovieRespositeries() }
 
     private val composite by lazy { CompositeDisposable() }
 
-    init {
-        Log.d("ptumang", "co khoi tao")
-        //if (listMovieLiveData.value.isNullOrEmpty())
-        if (listTrailerLiveData.value.isNullOrEmpty())
-            movie.id?.let { getTrailer(it) }
-    }
+//    init {
+//        Log.d("ptumang", "co khoi tao")
+//        if (listTrailerLiveData.value.isNullOrEmpty())
+//            movie?.id?.let { getTrailer(it) }
+//    }
 
-    fun getTrailer(id: Int) {
+    fun getTrailer( id:Int) {
         composite.add(
             apiManager.getMovieInfor(id)
                 .subscribeOn(Schedulers.io())
@@ -36,7 +35,7 @@ class TrailerViewmodel(var movie:Movie) : ViewModel() {
         )
     }
 
-    fun reFresh() {
-        movie.id?.let { getTrailer(it) }
-    }
+//    fun reFresh() {
+//        movie?.id?.let { getTrailer(it) }
+//    }
 }

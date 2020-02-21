@@ -3,4 +3,8 @@
     <string name="tv_title_film">Title of film</string>
     <string name="overview">Overview</string>
     <string name="release_date">Release date:</string>
+    <string name="err_load_video">Can not load this video</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

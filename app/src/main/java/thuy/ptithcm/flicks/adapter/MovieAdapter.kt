@@ -37,11 +37,11 @@ class MovieAdapter(
                     .inflate(R.layout.item_video, parent, false)
                 VideoViewHolder(movieAdapterEvent, context, view)
             }
-//            TYPE_LOADING -> {
-//                val view = LayoutInflater.from(context)
-//                    .inflate(R.layout.item_loading, parent, false)
-//                LoadingViewHolder(view)
-//            }
+            TYPE_LOADING -> {
+                val view = LayoutInflater.from(context)
+                    .inflate(R.layout.item_loading, parent, false)
+                LoadingViewHolder(view)
+            }
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
@@ -100,4 +100,5 @@ class MovieAdapter(
             else -> throw IllegalArgumentException()
         }
     }
+
 }

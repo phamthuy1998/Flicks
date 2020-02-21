@@ -16,14 +16,25 @@
         android:background="@color/colorBgDetail"
         tools:context=".activity.DetailPosterFilmActivity">
 
-        <com.google.android.youtube.player.YouTubePlayerView
+        <fragment
             android:id="@+id/movie_player_detail"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_margin="@dimen/mg_txt_title"
             app:layout_constraintHeight_percent="0.4"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:name="com.google.android.youtube.player.YouTubePlayerFragment">
+        </fragment>
+
+        <!--        <com.google.android.youtube.player.YouTubePlayerView-->
+        <!--            android:id="@+id/movie_player_detail"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="0dp"-->
+        <!--            android:layout_margin="@dimen/mg_txt_title"-->
+        <!--            app:layout_constraintHeight_percent="0.4"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent" />-->
 
         <TextView
             android:id="@+id/tv_title_detail"

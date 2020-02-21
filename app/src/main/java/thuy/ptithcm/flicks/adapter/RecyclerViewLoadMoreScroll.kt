@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 
 class RecyclerViewLoadMoreScroll : RecyclerView.OnScrollListener {
 
-    private var visibleThreshold = 5
+    private var visibleThreshold = 20
     private lateinit var mOnLoadMoreListener: OnLoadMoreListener
     private var isLoading: Boolean = false
     private var lastVisibleItem: Int = 0
@@ -55,7 +55,10 @@ class RecyclerViewLoadMoreScroll : RecyclerView.OnScrollListener {
             lastVisibleItem = getLastVisibleItem(lastVisibleItemPositions)
         } else if (mLayoutManager is GridLayoutManager) {
             lastVisibleItem = (mLayoutManager as GridLayoutManager).findLastVisibleItemPosition()
-        } else if (mLayoutManager is LinearLayoutManager) {
+        }
+
+
+        else if (mLayoutManager is LinearLayoutManager) {
             lastVisibleItem = (mLayoutManager as LinearLayoutManager).findLastVisibleItemPosition()
         }
 
