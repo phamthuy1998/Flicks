@@ -3,6 +3,7 @@ package thuy.ptithcm.flicks.viewmodel
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.android.youtube.player.YouTubePlayer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -12,7 +13,7 @@ import thuy.ptithcm.flicks.model.Youtube
 
 class MovieViewmodel : ViewModel() {
 
-    val listMovieLiveData = MutableLiveData<List<Movie>>().apply { value = listOf() }
+    var listMovieLiveData = MutableLiveData<ArrayList<Movie>>().apply { value = arrayListOf() }
     private val apiManager: MovieRespositeries by lazy { MovieRespositeries() }
 
     // CompositeDisposable dùng để quản lý Disposable, được sinh ra để chứa tất cả các Disposable
@@ -28,12 +29,13 @@ class MovieViewmodel : ViewModel() {
     }
 
     fun getMovie(page: Int = 1) {
+        listTempt = arrayListOf()
         composite.add(
             apiManager.getListMovie(page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    if(!it.results.isNullOrEmpty()){
+                    if (!it.results.isNullOrEmpty()) {
                         it.results.forEach { listTempt.add(it) }
                         listMovieLiveData.postValue(listTempt)
                     }
@@ -45,5 +47,4 @@ class MovieViewmodel : ViewModel() {
     fun reFresh() {
         getMovie()
     }
-
 }

@@ -1,5 +1,6 @@
 package thuy.ptithcm.flicks.adapter
 
+import android.util.Log
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -40,7 +41,6 @@ class RecyclerViewLoadMoreScroll : RecyclerView.OnScrollListener {
         visibleThreshold *= layoutManager.spanCount
     }
 
-
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         super.onScrolled(recyclerView, dx, dy)
 
@@ -59,14 +59,14 @@ class RecyclerViewLoadMoreScroll : RecyclerView.OnScrollListener {
 
 
         else if (mLayoutManager is LinearLayoutManager) {
-            lastVisibleItem = (mLayoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+            lastVisibleItem = (mLayoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
+            Log.d("arrSize",lastVisibleItem.toString())
         }
 
-        if (!isLoading && totalItemCount <= lastVisibleItem + visibleThreshold) {
+        if (lastVisibleItem == totalItemCount - 1) {
             mOnLoadMoreListener.onLoadMore()
             isLoading = true
         }
-
     }
 
     private fun getLastVisibleItem(lastVisibleItemPositions: IntArray): Int {

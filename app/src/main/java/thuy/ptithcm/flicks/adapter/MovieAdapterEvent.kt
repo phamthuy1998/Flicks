@@ -4,5 +4,4 @@ import thuy.ptithcm.flicks.model.Movie
 
 interface MovieAdapterEvent {
     fun onItemMovieClick(item: Movie?)
-    fun onMoviePopularClick(item: Movie?)
 }

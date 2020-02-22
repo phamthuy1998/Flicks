@@ -39,14 +39,15 @@
         android:layout_height="0dp"
         android:layout_marginTop="@dimen/mg_txt_title"
         android:ellipsize="end"
-        android:inputType="none"
-        android:maxLines="5"
         android:paddingBottom="@dimen/mg_txt_title"
         android:text="@string/overview"
         android:textColor="@color/colorTextOverView"
         android:textSize="16sp"
+        app:layout_constraintVertical_bias="0"
         app:layout_constraintBottom_toBottomOf="@id/iv_poster"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tv_title_poster"
         app:layout_constraintTop_toBottomOf="@id/tv_title_poster" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

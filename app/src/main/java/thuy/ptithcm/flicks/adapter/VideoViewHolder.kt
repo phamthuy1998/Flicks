@@ -27,13 +27,14 @@ class VideoViewHolder(val movieAdapterEvent: MovieAdapterEvent,val context: Cont
         val multi = MultiTransformation<Bitmap>(
             RoundedCornersTransformation(7, 0, RoundedCornersTransformation.CornerType.ALL)
         )
+
         Glide.with(itemView)
             .load(IMAGE_URL + movie?.backdrop_path)
             .apply(RequestOptions.bitmapTransform(multi))
             .into(itemView.iv_trailer)
 
         itemView.setOnClickListener {
-            movieAdapterEvent.onMoviePopularClick(movie)
+            movieAdapterEvent.onItemMovieClick(movie)
         }
     }
 }

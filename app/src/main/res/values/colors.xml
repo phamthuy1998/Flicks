@@ -7,5 +7,8 @@
     <color name="colorTextTitleFilm">#FFFFFF</color>
     <color name="colorTextOverView">#CECECE</color>
     <color name="colorBgDetail">#636161</color>
+    <color name="colorLoading">#2196F3</color>
     <color name="colorBgLauncher">#000</color>
+    <color name="colorTextHint">#CCCCCC</color>
+    <color name="colorBGTxtSearch">#34494949</color>
 </resources>

@@ -28,7 +28,6 @@ class MovieRespositeries {
             .addInterceptor(logging)
             .build()
 
-
         fun getHelperRestFull(): Retrofit? {
             if (retrofit == null) {
                 retrofit = Retrofit

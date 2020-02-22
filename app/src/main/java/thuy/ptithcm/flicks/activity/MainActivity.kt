@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,12 +30,9 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
         }
     }
 
-    private var listMovies: List<Movie>? = null
     private val movieAdapter: MovieAdapter by lazy {
-        MovieAdapter(this, listMovies, this)
+        MovieAdapter(this, movieAdapterEvent = this)
     }
-
-    private var page: Int = 1
 
     val movieViewModel: MovieViewmodel by lazy {
         ViewModelProviders
@@ -42,27 +40,25 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
             .get(MovieViewmodel::class.java)
     }
 
-
+    private var page: Int = 1
     lateinit var mLayoutManager: RecyclerView.LayoutManager
     lateinit var scrollListener: RecyclerViewLoadMoreScroll
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(
+            R.color.colorLoading
+        )
         binding()
-        addEvent()
         setRVLayoutManager()
-        setRVScrollListener()
+        addEvent()
     }
 
     private fun setRVLayoutManager() {
         mLayoutManager = LinearLayoutManager(this)
         rv_movies.layoutManager = mLayoutManager
-        rv_movies.setHasFixedSize(true)
-    }
-
-    private fun setRVScrollListener() {
-        mLayoutManager = LinearLayoutManager(this)
         scrollListener = RecyclerViewLoadMoreScroll(mLayoutManager as LinearLayoutManager)
         scrollListener.setOnLoadMoreListener(object : OnLoadMoreListener {
             override fun onLoadMore() {
@@ -73,27 +69,17 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
     }
 
     private fun LoadMoreData() {
-        movieAdapter.addLoadingView()
-        movieAdapter.removeLoadingView()
-        page++
-        Log.d("ptumang", page.toString() + "page")
-        movieViewModel.getMovie(page)
-        scrollListener.setLoaded()
-        rv_movies.post {
-            movieAdapter.notifyDataSetChanged()
-        }
+        progressBar.visibility = View.VISIBLE
+        Handler().postDelayed({
+            page++
+            movieViewModel.getMovie(page)
+            scrollListener.setLoaded()
+            progressBar.visibility = View.GONE
+        }, 1000)
     }
 
     override fun onItemMovieClick(item: Movie?) {
         val intent = Intent(this, DetailPosterFilmActivity.getInstance().javaClass)
-        intent.putExtra("movie", item)
-        startActivity(intent)
-    }
-
-    override fun onMoviePopularClick(item: Movie?) {
-        val intent = Intent(this, DetailPosterFilmActivity.getInstance().javaClass)
-        intent.putExtra("movie", item)
-        intent.putExtra("play", true)
         startActivity(intent)
     }
 
@@ -105,39 +91,18 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
         rv_movies.setHasFixedSize(true)
 
         movieViewModel.listMovieLiveData.observe(this, Observer {
-            listMovies = it
-            // movieViewModel.getMovie(page)
             movieAdapter.updateData(it)
-            Log.d("ptumang", it.size.toString() + "asdahsdhhd")
-
         })
-
-        movieViewModel.listMovieLiveData.observe(this, Observer {
-            listMovies = it
-            // movieViewModel.getMovie(page)
-            movieAdapter.updateData(it)
-            Log.d("ptumang", it.size.toString() + "asdahsdhhd")
-
-        })
-        // Configure the refreshing colors
-        swipeContainer.setColorSchemeResources(
-            android.R.color.holo_blue_dark
-        )
     }
 
     private fun addEvent() {
         swipeContainer.setOnRefreshListener {
             movieViewModel.reFresh()
-            val handle = Handler()
-            handle.postDelayed(
+            Handler().postDelayed(
                 {
-
                     swipeContainer.isRefreshing = false
-                    Log.d("ptumang", "refreesh xong")
-                }, 200
+                }, 500
             )
         }
     }
-
-
 }

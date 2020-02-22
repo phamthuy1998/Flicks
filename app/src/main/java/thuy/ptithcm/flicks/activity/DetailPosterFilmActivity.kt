@@ -16,6 +16,7 @@ import thuy.ptithcm.flicks.viewmodel.TrailerViewmodel
 
 class DetailPosterFilmActivity : AppCompatActivity() {
     lateinit var youTubePlayerG: YouTubePlayer
+    private var youTubeInit = false
 
     companion object {
         private var instance: DetailPosterFilmActivity? = null
@@ -23,8 +24,8 @@ class DetailPosterFilmActivity : AppCompatActivity() {
             if (instance == null) instance = DetailPosterFilmActivity()
             return instance!!
         }
-    }
 
+    }
 
     private var listTrailer: List<Youtube>? = null
 
@@ -59,6 +60,7 @@ class DetailPosterFilmActivity : AppCompatActivity() {
                     youTubePlayerG = youTubePlayer
 
                     movie?.id?.let { trailerViewModel.getTrailer(it) }
+//                    trailerViewModel.
                 }
 
                 override fun onInitializationFailure(
@@ -79,7 +81,13 @@ class DetailPosterFilmActivity : AppCompatActivity() {
     private fun bindings() {
         trailerViewModel.listTrailerLiveData.observe(this, Observer {
             if (!it.isNullOrEmpty()) {
-                youTubePlayerG.cueVideo(it[0].source)
+                if (youTubeInit){
+                    youTubePlayerG.cueVideo(it[0].source)
+
+                }else {
+                    youTubeInit = true
+                    movie?.id?.let { trailerViewModel.getTrailer(it) }
+                }
             }
         })
     }

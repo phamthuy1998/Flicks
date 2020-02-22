@@ -8,21 +8,19 @@ import androidx.recyclerview.widget.RecyclerView
 import thuy.ptithcm.flicks.R
 import thuy.ptithcm.flicks.model.Movie
 import android.util.Log
+import android.view.View
 import thuy.ptithcm.flicks.model.Youtube
 
 
 class MovieAdapter(
     private val context: Context,
-    private var listMovieInfor: List<Movie?>? = null,
+    private var listMovieInfor: ArrayList<Movie?>? = arrayListOf(),
     var movieAdapterEvent: MovieAdapterEvent
-    // higher function
-//    val listener: (id: Int, position : Int) -> Unit
 ) :
     RecyclerView.Adapter<BaseViewHolder<*>>() {
     companion object {
         private const val TYPE_POSTER = 0
         private const val TYPE_VIDEO = 1
-        private const val TYPE_LOADING = 2
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<*> {
@@ -37,24 +35,17 @@ class MovieAdapter(
                     .inflate(R.layout.item_video, parent, false)
                 VideoViewHolder(movieAdapterEvent, context, view)
             }
-            TYPE_LOADING -> {
-                val view = LayoutInflater.from(context)
-                    .inflate(R.layout.item_loading, parent, false)
-                LoadingViewHolder(view)
-            }
             else -> throw IllegalArgumentException("Invalid view type")
         }
     }
 
-    fun updateData(list: List<Movie>) {
-        listMovieInfor = list
+    fun updateData(list: ArrayList<Movie>) {
+        listMovieInfor?.addAll(list ?: arrayListOf())
         notifyDataSetChanged()
     }
 
-    fun clear() {
-        with(listMovieInfor) {
-            clear()
-        }
+    fun removeAllData() {
+        listMovieInfor = arrayListOf()
         notifyDataSetChanged()
     }
 
@@ -64,32 +55,13 @@ class MovieAdapter(
             return when {
                 comparable <= 5 -> TYPE_POSTER
                 comparable > 5 -> TYPE_VIDEO
-                else -> throw IllegalArgumentException("Invalid type of data " + position)
+                else -> TYPE_POSTER
             }
         } else return TYPE_POSTER
     }
 
-    fun addLoadingView() {
-        //Add loading item
-        Handler().post {
-            listMovieInfor?.toMutableList()?.add(null)
-            //notifyItemInserted(listMovieInfor.size - 1)
-            listMovieInfor?.size?.minus(1)?.let { notifyItemInserted(it) }
-        }
-    }
-
-    fun removeLoadingView() {
-        //Remove loading item
-        if (listMovieInfor?.size != 0) {
-            // listMovieInfor?.toMutableList()?.removeAt(listMovieInfor?.size - 1)
-            listMovieInfor?.size?.minus(1)?.let { listMovieInfor?.toMutableList()?.removeAt(it) }
-            listMovieInfor?.size?.let { notifyItemRemoved(it) }
-        }
-    }
-
-
     override fun getItemCount(): Int {
-        return listMovieInfor!!.size
+        return listMovieInfor?.size ?: 0
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
@@ -100,5 +72,4 @@ class MovieAdapter(
             else -> throw IllegalArgumentException()
         }
     }
-
 }
