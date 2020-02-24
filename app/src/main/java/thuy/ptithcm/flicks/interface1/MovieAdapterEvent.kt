@@ -1,4 +1,4 @@
-package thuy.ptithcm.flicks.adapter
+package thuy.ptithcm.flicks.interface1
 
 import thuy.ptithcm.flicks.model.Movie
 

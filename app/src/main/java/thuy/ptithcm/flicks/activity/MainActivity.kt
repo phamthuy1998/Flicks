@@ -6,22 +6,17 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import thuy.ptithcm.flicks.R
 import thuy.ptithcm.flicks.adapter.MovieAdapter
 import thuy.ptithcm.flicks.model.Movie
 import thuy.ptithcm.flicks.viewmodel.MovieViewmodel
-import thuy.ptithcm.flicks.adapter.MovieAdapterEvent
-import thuy.ptithcm.flicks.adapter.OnLoadMoreListener
-import thuy.ptithcm.flicks.adapter.RecyclerViewLoadMoreScroll
+import thuy.ptithcm.flicks.interface1.MovieAdapterEvent
 
 
 class MainActivity : AppCompatActivity(), MovieAdapterEvent {
@@ -131,11 +126,9 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
             }
         })
     }

@@ -123,7 +123,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/mg_txt_title"
-                    android:background="@color/colorBGTxtSearch"
+                    android:background="@color/colorBGOverview"
                     android:padding="@dimen/mg_txt_title"
                     android:text="@string/overview"
                     android:textColor="@android:color/white"

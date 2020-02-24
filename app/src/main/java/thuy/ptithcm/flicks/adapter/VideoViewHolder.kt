@@ -10,6 +10,7 @@ import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.item_video.view.*
 import thuy.ptithcm.flicks.model.Movie
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation
+import thuy.ptithcm.flicks.interface1.MovieAdapterEvent
 import thuy.ptithcm.flicks.utils.IMAGE_URL
 
 

@@ -11,7 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import thuy.ptithcm.flicks.utils.BASE_URL
 import okhttp3.OkHttpClient
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import thuy.ptithcm.flicks.model.Movie
+import thuy.ptithcm.flicks.interface1.MyApi
 import thuy.ptithcm.flicks.model.MovieList
 import thuy.ptithcm.flicks.model.Trailer
 

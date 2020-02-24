@@ -12,7 +12,7 @@ data class Trailer(
     val quicktime: List<Any>?,
 
     @SerializedName("youtube")
-    val youtube: List<Youtube>?
+    val youtube: ArrayList<Youtube>?
 )
 @Parcelize
 data class Youtube(

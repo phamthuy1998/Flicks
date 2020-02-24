@@ -8,6 +8,7 @@ import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.request.RequestOptions
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation
 import kotlinx.android.synthetic.main.item_poster.view.*
+import thuy.ptithcm.flicks.interface1.MovieAdapterEvent
 import thuy.ptithcm.flicks.utils.IMAGE_URL
 
 
@@ -30,12 +31,6 @@ class PosterViewHolder(var movieAdapterEvent: MovieAdapterEvent, itemView: View)
 
         // intent into DetailPosterFilmActivity
         itemView.setOnClickListener {
-            // cach 1:
-//            val intent = Intent(context, DetailPosterFilmActivity.getInstance().javaClass)
-//            intent.putExtra("id", movie?.id)
-//            context.startActivity(intent)
-
-            // cach 2:
             movieAdapterEvent.onItemMovieClick(movie)
         }
     }

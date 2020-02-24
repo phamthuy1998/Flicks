@@ -14,7 +14,7 @@ import thuy.ptithcm.flicks.model.Youtube
 
 class TrailerViewmodel() : ViewModel() {
 
-    val listTrailerLiveData = MutableLiveData<List<Youtube>>().apply { value = mutableListOf() }
+    val listTrailerLiveData = MutableLiveData<ArrayList<Youtube>>().apply { value = arrayListOf() }
     private val apiManager: MovieRespositeries by lazy { MovieRespositeries() }
     lateinit var youTubePlayerG: YouTubePlayer
     private val composite by lazy { CompositeDisposable() }
@@ -34,8 +34,4 @@ class TrailerViewmodel() : ViewModel() {
     fun setYoutubePlayer(youTubePlayer: YouTubePlayer){
         youTubePlayerG = youTubePlayer
     }
-
-//    fun reFresh() {
-//        movie?.id?.let { getTrailer(it) }
-//    }
 }

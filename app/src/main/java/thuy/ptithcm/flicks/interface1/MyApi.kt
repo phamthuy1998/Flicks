@@ -1,4 +1,4 @@
-package thuy.ptithcm.flicks.api
+package thuy.ptithcm.flicks.interface1
 
 import retrofit2.Call
 import retrofit2.http.*

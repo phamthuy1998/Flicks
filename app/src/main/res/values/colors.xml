@@ -12,4 +12,5 @@
     <color name="colorTextHint">#CCCCCC</color>
     <color name="colorBGTxtSearch">#34494949</color>
     <color name="colorToolbar">#CC2316</color>
+    <color name="colorBGOverview">#639C9A9A</color>
 </resources>

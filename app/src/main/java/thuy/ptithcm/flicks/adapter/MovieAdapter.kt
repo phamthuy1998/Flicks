@@ -1,16 +1,12 @@
 package thuy.ptithcm.flicks.adapter
 
 import android.content.Context
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import thuy.ptithcm.flicks.R
+import thuy.ptithcm.flicks.interface1.MovieAdapterEvent
 import thuy.ptithcm.flicks.model.Movie
-import android.util.Log
-import android.view.View
-import kotlinx.android.synthetic.main.activity_main.*
-import thuy.ptithcm.flicks.model.Youtube
 
 
 class MovieAdapter(

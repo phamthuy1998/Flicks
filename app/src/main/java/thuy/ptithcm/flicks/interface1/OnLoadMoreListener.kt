@@ -1,4 +1,4 @@
-package thuy.ptithcm.flicks.adapter
+package thuy.ptithcm.flicks.interface1
 
 interface OnLoadMoreListener {
     fun onLoadMore()

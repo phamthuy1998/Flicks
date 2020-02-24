@@ -1,10 +1,8 @@
 package thuy.ptithcm.flicks.activity
 
-import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
-import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -14,16 +12,15 @@ import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerFragment
 import kotlinx.android.synthetic.main.activity_detail_film.*
 import thuy.ptithcm.flicks.R
-import thuy.ptithcm.flicks.adapter.MovieAdapter
+import thuy.ptithcm.flicks.adapter.TrailerAdapter
+import thuy.ptithcm.flicks.interface1.TrailerEvent
 import thuy.ptithcm.flicks.model.Movie
 import thuy.ptithcm.flicks.model.Youtube
 import thuy.ptithcm.flicks.utils.YOUTUBE_API
 import thuy.ptithcm.flicks.viewmodel.TrailerViewmodel
 
 
-class DetailPosterFilmActivity : AppCompatActivity() {
-    lateinit var youTubePlayerG: YouTubePlayer
-    private var youTubeInit = false
+class DetailPosterFilmActivity : AppCompatActivity(), TrailerEvent {
 
     companion object {
         private var instance: DetailPosterFilmActivity? = null
@@ -39,24 +36,33 @@ class DetailPosterFilmActivity : AppCompatActivity() {
             .get(TrailerViewmodel::class.java)
     }
 
-//    private val trailerAdapter: MovieAdapter by lazy {
-//        MovieAdapter(this, movieAdapterEvent = this)
-//    }
-
     private var movie: Movie? = null
-    private var playVideo = false
     private var showOverview = false
+    lateinit var youTubePlayerG: YouTubePlayer
+    private var youTubeInit = false
+
+    private val trailerAdapter: TrailerAdapter by lazy {
+        TrailerAdapter(trailerEvent = this, movie = movie)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_film)
         movie = intent?.getParcelableExtra("movie")
-        playVideo = intent?.getBooleanExtra("play", false) ?: false
+        movie?.id?.let { trailerViewModel.getTrailer(it) }
 
         inItView()
         bindings()
         setInforMovie(movie)
         addEvents()
+    }
+
+    override fun onItemTrailerClick(item: Youtube?) {
+        youTubePlayerG.cueVideo(item?.source)
+        val orientation = getResources().getConfiguration().orientation
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            tv_title_detail.text = item?.name
+        }
     }
 
     private fun inItView() {
@@ -71,7 +77,6 @@ class DetailPosterFilmActivity : AppCompatActivity() {
                     youTubePlayer: YouTubePlayer, b: Boolean
                 ) { // do any work here to
                     youTubePlayerG = youTubePlayer
-                    movie?.id?.let { trailerViewModel.getTrailer(it) }
                 }
 
                 override fun onInitializationFailure(
@@ -80,15 +85,16 @@ class DetailPosterFilmActivity : AppCompatActivity() {
                 ) {
                 }
             })
+
         val orientation = getResources().getConfiguration().orientation
-//        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-//            rv_another_trailer.layoutManager = LinearLayoutManager(
-//                this,
-//                LinearLayoutManager.HORIZONTAL,
-//                false
-//            )
-//            rv_another_trailer.adapter = trailerAdapter
-//        }
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            rv_another_trailer.layoutManager = LinearLayoutManager(
+                this,
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
+            rv_another_trailer.adapter = trailerAdapter
+        }
     }
 
     private fun addEvents() {
@@ -108,7 +114,7 @@ class DetailPosterFilmActivity : AppCompatActivity() {
     }
 
     private fun setInforMovie(movie: Movie?) {
-        val orientation = getResources().getConfiguration().orientation
+        val orientation = resources.getConfiguration().orientation
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             tv_title_detail.text = movie?.original_title
             rating_film.numStars = 10
@@ -123,6 +129,12 @@ class DetailPosterFilmActivity : AppCompatActivity() {
     private fun bindings() {
         trailerViewModel.listTrailerLiveData.observe(this, Observer {
             if (!it.isNullOrEmpty()) {
+//                //youTubePlayerG.cueVideo(it[0].source)
+//
+//                if (count==0)
+//                    count ++
+//                else
+//                    youTubePlayerG.cueVideo(it[0].source)
                 if (youTubeInit) {
                     youTubePlayerG.cueVideo(it[0].source)
 
@@ -130,6 +142,7 @@ class DetailPosterFilmActivity : AppCompatActivity() {
                     youTubeInit = true
                     movie?.id?.let { trailerViewModel.getTrailer(it) }
                 }
+                trailerAdapter.updateData(it)
             }
         })
     }

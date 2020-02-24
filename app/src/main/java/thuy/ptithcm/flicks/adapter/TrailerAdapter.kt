@@ -1,22 +1,29 @@
 package thuy.ptithcm.flicks.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.youtube.player.YouTubeInitializationResult
-import com.google.android.youtube.player.YouTubePlayer
-import com.google.android.youtube.player.YouTubePlayerFragment
 import kotlinx.android.synthetic.main.item_trailer.view.*
 import thuy.ptithcm.flicks.R
+import thuy.ptithcm.flicks.interface1.TrailerEvent
 import thuy.ptithcm.flicks.model.Movie
 import thuy.ptithcm.flicks.model.Youtube
-import thuy.ptithcm.flicks.utils.YOUTUBE_API
+import android.graphics.Bitmap
+import android.util.DisplayMetrics
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.MultiTransformation
+import com.bumptech.glide.request.RequestOptions
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation
+import kotlinx.android.synthetic.main.item_video.view.*
+import thuy.ptithcm.flicks.utils.IMAGE_URL
 
 
-
-class TrailerAdapter(private var listYoutube: ArrayList<Youtube>?, private val context: Context?) : RecyclerView.Adapter<BaseViewHolder<*>>() {
+class TrailerAdapter(
+    private var listYoutube: ArrayList<Youtube>? = arrayListOf(),
+    private var trailerEvent: TrailerEvent,
+    private var movie: Movie? = null
+) : RecyclerView.Adapter<BaseViewHolder<*>>() {
 
     private var youtube: Youtube? = null
 
@@ -35,35 +42,36 @@ class TrailerAdapter(private var listYoutube: ArrayList<Youtube>?, private val c
         holder.bind(position)
     }
 
-    inner class TrailerViewHolder(view: View) : BaseViewHolder<View>(view)  {
+    fun updateData(list: ArrayList<Youtube>) {
+        listYoutube?.addAll(list ?: arrayListOf())
+        notifyDataSetChanged()
+    }
+
+    fun removeAllData() {
+        listYoutube = arrayListOf()
+        notifyDataSetChanged()
+    }
+
+    fun addData(list: ArrayList<Youtube>) {
+        listYoutube = list
+    }
+
+    inner class TrailerViewHolder(view: View) : BaseViewHolder<View>(view) {
         override fun bind(movie: Movie?) {}
 
         override fun bind(position: Int?) {
             youtube = position?.let { listYoutube?.get(it) }
             itemView.tv_title_trailer.text = youtube?.name
-
-//            val youtubeFragment =
-//                itemView.findViewById(thuy.ptithcm.flicks.R.id.movie_player_detail) as YouTubePlayerFragment
-//
-//            youtubeFragment.initialize(
-//                YOUTUBE_API,
-//                object : YouTubePlayer.OnInitializedListener {
-//                    override fun onInitializationSuccess(
-//                        provider: YouTubePlayer.Provider,
-//                        youTubePlayer: YouTubePlayer, b: Boolean
-//                    ) { // do any work here to
-//                        youTubePlayerG = youTubePlayer
-//                        movie?.id?.let { trailerViewModel.getTrailer(it) }
-//                    }
-//
-//                    override fun onInitializationFailure(
-//                        provider: YouTubePlayer.Provider,
-//                        youTubeInitializationResult: YouTubeInitializationResult
-//                    ) {
-//                    }
-//                })
+            //set image rounded
+            val multi = MultiTransformation<Bitmap>(
+                RoundedCornersTransformation(7, 0, RoundedCornersTransformation.CornerType.ALL)
+            )
+            Glide.with(itemView)
+                .load(IMAGE_URL + movie?.backdrop_path)
+                .apply(RequestOptions.bitmapTransform(multi))
+                .into(itemView.im_trailer_item)
+            itemView.im_trailer_item.setOnClickListener {trailerEvent.onItemTrailerClick(youtube)}
+            itemView.btn_play_video.setOnClickListener {trailerEvent.onItemTrailerClick(youtube)}
         }
-
     }
-
 }
