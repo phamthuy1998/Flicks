@@ -44,7 +44,7 @@ class TrailerAdapter(private var listYoutube: ArrayList<Youtube>?, private val c
 
 //            val youtubeFragment =
 //                itemView.findViewById(thuy.ptithcm.flicks.R.id.movie_player_detail) as YouTubePlayerFragment
-
+//
 //            youtubeFragment.initialize(
 //                YOUTUBE_API,
 //                object : YouTubePlayer.OnInitializedListener {

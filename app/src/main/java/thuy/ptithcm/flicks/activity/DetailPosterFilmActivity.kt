@@ -45,7 +45,7 @@ class DetailPosterFilmActivity : AppCompatActivity() {
 
     private var movie: Movie? = null
     private var playVideo = false
-    private var showOverview= false
+    private var showOverview = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,16 +93,16 @@ class DetailPosterFilmActivity : AppCompatActivity() {
 
     private fun addEvents() {
         btn_trailer_back.setOnClickListener {
-           finish()
+            finish()
         }
         val orientation = getResources().getConfiguration().orientation
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             tv_title_overView_detail.setOnClickListener {
-                showOverview =!showOverview
-                if(showOverview){
-                    tv_overView_detail.visibility= View.VISIBLE
-                }else
-                    tv_overView_detail.visibility= View.GONE
+                showOverview = !showOverview
+                if (showOverview) {
+                    tv_overView_detail.visibility = View.VISIBLE
+                } else
+                    tv_overView_detail.visibility = View.GONE
             }
         }
     }

@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 data class MovieList(
     val dates: Dates?,
     val page: Int?,
-    val results: List<Movie>?,
+    val results: ArrayList<Movie>?,
     val total_pages: Int?,
     val total_results: Int?
 )

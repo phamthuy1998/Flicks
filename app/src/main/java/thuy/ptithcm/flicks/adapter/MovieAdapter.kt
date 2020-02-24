@@ -9,12 +9,13 @@ import thuy.ptithcm.flicks.R
 import thuy.ptithcm.flicks.model.Movie
 import android.util.Log
 import android.view.View
+import kotlinx.android.synthetic.main.activity_main.*
 import thuy.ptithcm.flicks.model.Youtube
 
 
 class MovieAdapter(
     private val context: Context,
-    private var listMovieInfor: ArrayList<Movie?>? = arrayListOf(),
+    private var listMovieInfor: ArrayList<Movie>? = arrayListOf(),
     var movieAdapterEvent: MovieAdapterEvent
 ) :
     RecyclerView.Adapter<BaseViewHolder<*>>() {
@@ -47,6 +48,10 @@ class MovieAdapter(
     fun removeAllData() {
         listMovieInfor = arrayListOf()
         notifyDataSetChanged()
+    }
+
+    fun addData(list: ArrayList<Movie>) {
+        listMovieInfor = list
     }
 
     override fun getItemViewType(position: Int): Int {

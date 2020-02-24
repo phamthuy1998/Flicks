@@ -4,9 +4,12 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -52,7 +55,6 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
         )
         // Hidden keyboard
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
         binding()
         addEvent()
     }
@@ -82,16 +84,59 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
         movieViewModel.listMovieLiveData.observe(this, Observer {
             movieAdapter.updateData(it)
         })
+
+        movieViewModel.listSearchLiveData.observe(this, Observer {
+            if (edt_search.text.isNotEmpty()) {
+                movieAdapter.removeAllData()
+                movieAdapter.addData(it)
+            }
+        })
     }
 
     private fun addEvent() {
         swipeContainer.setOnRefreshListener {
-            movieViewModel.reFresh()
+            if (edt_search.text.isNotEmpty()) {
+                movieAdapter.removeAllData()
+                movieViewModel.getMovieSearch(edt_search.text.trim().toString())
+                if (movieAdapter.itemCount == 0) tv_search_null.visibility = View.GONE
+                else tv_search_null.visibility = View.VISIBLE
+            } else {
+                movieViewModel.reFresh()
+            }
             Handler().postDelayed(
                 {
                     swipeContainer.isRefreshing = false
                 }, 500
             )
         }
+        edt_search.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                if (movieAdapter.itemCount == 0) {
+                    tv_search_null.visibility = View.VISIBLE
+                    rv_movies.visibility = View.GONE
+                }
+                else {
+                    tv_search_null.visibility = View.GONE
+                    rv_movies.visibility = View.VISIBLE
+                }
+
+                if (edt_search.text.isNotEmpty()) {
+                    movieAdapter.removeAllData()
+                    movieViewModel.getMovieSearch(edt_search.text.trim().toString())
+                } else {
+                    movieAdapter.removeAllData()
+                    page = 1
+                    movieViewModel.getMovie(page)
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+            }
+        })
     }
 }

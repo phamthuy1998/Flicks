@@ -14,6 +14,7 @@ import thuy.ptithcm.flicks.model.Youtube
 class MovieViewmodel : ViewModel() {
 
     var listMovieLiveData = MutableLiveData<ArrayList<Movie>>().apply { value = arrayListOf() }
+    var listSearchLiveData = MutableLiveData<ArrayList<Movie>>().apply { value = arrayListOf() }
     private val apiManager: MovieRespositeries by lazy { MovieRespositeries() }
 
     // CompositeDisposable dùng để quản lý Disposable, được sinh ra để chứa tất cả các Disposable
@@ -42,6 +43,20 @@ class MovieViewmodel : ViewModel() {
                 }, {
                 })
         )
+    }
+
+    fun getMovieSearch(strSearch: String = "") {
+        apiManager.getMovieSearch(strSearch = strSearch)
+            ?.subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe({
+                listSearchLiveData.value = it.results
+            }, {
+            })?.let {
+                composite.add(
+                    it
+                )
+            }
     }
 
     fun reFresh() {

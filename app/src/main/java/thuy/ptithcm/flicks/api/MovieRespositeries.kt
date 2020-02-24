@@ -1,5 +1,6 @@
 package thuy.ptithcm.flicks.api
 
+import android.util.Log
 import io.reactivex.Single
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -10,6 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import thuy.ptithcm.flicks.utils.BASE_URL
 import okhttp3.OkHttpClient
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import thuy.ptithcm.flicks.model.Movie
 import thuy.ptithcm.flicks.model.MovieList
 import thuy.ptithcm.flicks.model.Trailer
 
@@ -23,7 +25,11 @@ class MovieRespositeries {
 
         private var retrofit: Retrofit? = null
 
-        val logging = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC)
+        val logging = HttpLoggingInterceptor(object :HttpLoggingInterceptor.Logger{
+            override fun log(message: String) {
+                Log.d("API",message)
+            }
+        }).setLevel(HttpLoggingInterceptor.Level.BASIC)
         var client = OkHttpClient.Builder()
             .addInterceptor(logging)
             .build()
@@ -73,5 +79,9 @@ class MovieRespositeries {
 
     fun getMovieInfor(id: Int): Single<Trailer> {
         return buildRequest(_myApi.getMovieInforVideo(id))
+    }
+
+    fun getMovieSearch(strSearch: String): Single<MovieList>? {
+        return buildRequest(_myApi.getMovieSearch(strSearch=strSearch))
     }
 }

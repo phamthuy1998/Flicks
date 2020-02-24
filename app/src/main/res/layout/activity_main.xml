@@ -27,13 +27,13 @@
             <EditText
                 android:id="@+id/edt_search"
                 android:layout_width="match_parent"
-                android:textColor="@android:color/white"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/mg_txt_title"
+                android:background="@color/colorBGTxtSearch"
                 android:hint="@string/search"
                 android:maxLines="1"
                 android:padding="@dimen/mg_txt_title"
-                android:background="@color/colorBGTxtSearch"
+                android:textColor="@android:color/white"
                 android:textColorHint="@color/colorTextHint" />
         </androidx.appcompat.widget.Toolbar>
 
@@ -46,6 +46,17 @@
             android:orientation="vertical"
             tools:itemCount="2"
             tools:listitem="@layout/item_video" />
+
+        <TextView
+            android:id="@+id/tv_search_null"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/mg_txt_title"
+            android:gravity="center"
+            android:text="@string/no_results_were_found"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:visibility="gone" />
 
         <ProgressBar
             android:id="@+id/progressBar"
