@@ -42,8 +42,6 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
     }
 
     private var page: Int = 1
-    lateinit var mLayoutManager: RecyclerView.LayoutManager
-    lateinit var scrollListener: RecyclerViewLoadMoreScroll
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,28 +54,14 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         binding()
-        setRVLayoutManager()
         addEvent()
     }
 
-    private fun setRVLayoutManager() {
-        mLayoutManager = LinearLayoutManager(this)
-        rv_movies.layoutManager = mLayoutManager
-        scrollListener = RecyclerViewLoadMoreScroll(mLayoutManager as LinearLayoutManager)
-        scrollListener.setOnLoadMoreListener(object : OnLoadMoreListener {
-            override fun onLoadMore() {
-                LoadMoreData()
-            }
-        })
-        rv_movies.addOnScrollListener(scrollListener)
-    }
-
-    private fun LoadMoreData() {
+    override fun onLoadMore() {
         progressBar.visibility = View.VISIBLE
         Handler().postDelayed({
             page++
             movieViewModel.getMovie(page)
-            scrollListener.setLoaded()
             progressBar.visibility = View.GONE
         }, 1000)
     }

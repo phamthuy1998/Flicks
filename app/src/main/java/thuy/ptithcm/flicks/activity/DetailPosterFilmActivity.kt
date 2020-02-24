@@ -39,9 +39,9 @@ class DetailPosterFilmActivity : AppCompatActivity() {
             .get(TrailerViewmodel::class.java)
     }
 
-    private val trailerAdapter: MovieAdapter by lazy {
-        MovieAdapter(this, movieAdapterEvent = this)
-    }
+//    private val trailerAdapter: MovieAdapter by lazy {
+//        MovieAdapter(this, movieAdapterEvent = this)
+//    }
 
     private var movie: Movie? = null
     private var playVideo = false
@@ -81,14 +81,14 @@ class DetailPosterFilmActivity : AppCompatActivity() {
                 }
             })
         val orientation = getResources().getConfiguration().orientation
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            rv_another_trailer.layoutManager = LinearLayoutManager(
-                this,
-                LinearLayoutManager.HORIZONTAL,
-                false
-            )
-            rv_another_trailer.adapter = trailerAdapter
-        }
+//        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+//            rv_another_trailer.layoutManager = LinearLayoutManager(
+//                this,
+//                LinearLayoutManager.HORIZONTAL,
+//                false
+//            )
+//            rv_another_trailer.adapter = trailerAdapter
+//        }
     }
 
     private fun addEvents() {

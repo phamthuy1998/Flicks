@@ -15,7 +15,7 @@ import thuy.ptithcm.flicks.model.Youtube
 class MovieAdapter(
     private val context: Context,
     private var listMovieInfor: ArrayList<Movie?>? = arrayListOf(),
-        var movieAdapterEvent: MovieAdapterEvent
+    var movieAdapterEvent: MovieAdapterEvent
 ) :
     RecyclerView.Adapter<BaseViewHolder<*>>() {
     companion object {
@@ -65,11 +65,19 @@ class MovieAdapter(
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
-        val element = listMovieInfor?.get(position)
-        when (holder) {
-            is PosterViewHolder -> element?.let { holder.bind(it) }
-            is VideoViewHolder -> element?.let { holder.bind(it) }
-            else -> throw IllegalArgumentException()
+        if (position == listMovieInfor?.size?.minus(1)) {
+            movieAdapterEvent.onLoadMore()
+        } else {
+            val element = listMovieInfor?.get(position)
+            when (holder) {
+                is PosterViewHolder -> element?.let {
+                    holder.bind(it)
+                }
+                is VideoViewHolder -> element?.let {
+                    holder.bind(it)
+                }
+                else -> throw IllegalArgumentException()
+            }
         }
     }
 }

@@ -42,8 +42,8 @@ class TrailerAdapter(private var listYoutube: ArrayList<Youtube>?, private val c
             youtube = position?.let { listYoutube?.get(it) }
             itemView.tv_title_trailer.text = youtube?.name
 
-            val youtubeFragment =
-                itemView.findViewById(thuy.ptithcm.flicks.R.id.movie_player_detail) as YouTubePlayerFragment
+//            val youtubeFragment =
+//                itemView.findViewById(thuy.ptithcm.flicks.R.id.movie_player_detail) as YouTubePlayerFragment
 
 //            youtubeFragment.initialize(
 //                YOUTUBE_API,

@@ -14,7 +14,7 @@ import thuy.ptithcm.flicks.utils.IMAGE_URL
 
 
 class VideoViewHolder(
-    val movieAdapterEvent: MovieAdapterEvent,
+    private val movieAdapterEvent: MovieAdapterEvent,
     val context: Context,
     itemView: View
 ) :
