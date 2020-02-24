@@ -16,12 +16,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import thuy.ptithcm.flicks.R
-import thuy.ptithcm.flicks.adapter.MovieAdapter
+import thuy.ptithcm.flicks.adapter.*
 import thuy.ptithcm.flicks.model.Movie
+import thuy.ptithcm.flicks.model.Youtube
 import thuy.ptithcm.flicks.viewmodel.MovieViewmodel
-import thuy.ptithcm.flicks.adapter.MovieAdapterEvent
-import thuy.ptithcm.flicks.adapter.OnLoadMoreListener
-import thuy.ptithcm.flicks.adapter.RecyclerViewLoadMoreScroll
 
 
 class MainActivity : AppCompatActivity(), MovieAdapterEvent {
@@ -37,6 +35,8 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
     private val movieAdapter: MovieAdapter by lazy {
         MovieAdapter(this, movieAdapterEvent = this)
     }
+
+
 
     val movieViewModel: MovieViewmodel by lazy {
         ViewModelProviders
@@ -83,6 +83,7 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
 
         movieViewModel.listMovieLiveData.observe(this, Observer {
             movieAdapter.updateData(it)
+
         })
 
         movieViewModel.listSearchLiveData.observe(this, Observer {

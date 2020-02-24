@@ -10,4 +10,6 @@ abstract class BaseViewHolder<view: View>(itemView: View) : RecyclerView.ViewHol
     abstract fun bind(movie: Movie?)
 
     abstract fun bind(position: Int?)
+
+    abstract fun bind(trailer : Youtube?)
 }

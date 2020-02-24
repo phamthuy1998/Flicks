@@ -1,10 +1,8 @@
 package thuy.ptithcm.flicks.activity
 
-import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
-import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -14,14 +12,15 @@ import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerFragment
 import kotlinx.android.synthetic.main.activity_detail_film.*
 import thuy.ptithcm.flicks.R
-import thuy.ptithcm.flicks.adapter.MovieAdapter
+import thuy.ptithcm.flicks.adapter.TrailerAdapter
+import thuy.ptithcm.flicks.adapter.TrailerAdapterEvent
 import thuy.ptithcm.flicks.model.Movie
 import thuy.ptithcm.flicks.model.Youtube
 import thuy.ptithcm.flicks.utils.YOUTUBE_API
 import thuy.ptithcm.flicks.viewmodel.TrailerViewmodel
 
 
-class DetailPosterFilmActivity : AppCompatActivity() {
+class DetailPosterFilmActivity : AppCompatActivity() , TrailerAdapterEvent {
     lateinit var youTubePlayerG: YouTubePlayer
     private var youTubeInit = false
 
@@ -39,9 +38,11 @@ class DetailPosterFilmActivity : AppCompatActivity() {
             .get(TrailerViewmodel::class.java)
     }
 
-//    private val trailerAdapter: MovieAdapter by lazy {
-//        MovieAdapter(this, movieAdapterEvent = this)
-//    }
+    private var listTrailerVideo = arrayListOf<Youtube>()
+    private val trailerAdapter: TrailerAdapter by lazy {
+        TrailerAdapter(listTrailerVideo, this, this)
+    }
+
 
     private var movie: Movie? = null
     private var playVideo = false
@@ -55,8 +56,16 @@ class DetailPosterFilmActivity : AppCompatActivity() {
 
         inItView()
         bindings()
+        initAdapter()
         setInforMovie(movie)
         addEvents()
+    }
+
+    private fun initAdapter() {
+        rv_another_trailer?.run {
+            this.adapter = trailerAdapter
+            this.layoutManager = LinearLayoutManager(context)
+        }
     }
 
     private fun inItView() {
@@ -89,7 +98,10 @@ class DetailPosterFilmActivity : AppCompatActivity() {
 //            )
 //            rv_another_trailer.adapter = trailerAdapter
 //        }
+
+
     }
+
 
     private fun addEvents() {
         btn_trailer_back.setOnClickListener {
@@ -105,6 +117,7 @@ class DetailPosterFilmActivity : AppCompatActivity() {
                     tv_overView_detail.visibility = View.GONE
             }
         }
+
     }
 
     private fun setInforMovie(movie: Movie?) {
@@ -125,6 +138,8 @@ class DetailPosterFilmActivity : AppCompatActivity() {
             if (!it.isNullOrEmpty()) {
                 if (youTubeInit) {
                     youTubePlayerG.cueVideo(it[0].source)
+                    listTrailerVideo.addAll(it)
+                    trailerAdapter.notifyDataSetChanged()
 
                 } else {
                     youTubeInit = true
@@ -133,4 +148,12 @@ class DetailPosterFilmActivity : AppCompatActivity() {
             }
         })
     }
+
+    override fun onItemMovieClick(item: Youtube?) {
+        if (youTubeInit){
+            youTubePlayerG.cueVideo(item?.source)
+        }
+    }
+
+
 }
