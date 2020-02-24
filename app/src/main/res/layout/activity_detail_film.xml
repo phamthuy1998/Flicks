@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -8,84 +10,153 @@
             type="thuy.ptithcm.flicks.viewmodel.TrailerViewmodel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorBgDetail"
+        android:orientation="vertical"
         tools:context=".activity.DetailPosterFilmActivity">
 
-        <fragment
-            android:id="@+id/movie_player_detail"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/tb_trailer_detail"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_margin="@dimen/mg_txt_title"
-            app:layout_constraintHeight_percent="0.4"
+            android:layout_height="?actionBarSize"
+            android:background="@color/colorToolbar"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:name="com.google.android.youtube.player.YouTubePlayerFragment">
-        </fragment>
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/tv_title_detail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="@dimen/mg_txt_title"
-            android:layout_marginTop="@dimen/mg_txt_title"
-            android:layout_marginEnd="@dimen/mg_txt_title"
-            android:text="@string/tv_title_film"
-            android:textColor="@color/colorTextTitleFilm"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/movie_player_detail" />
-
-        <TextView
-            android:id="@+id/tv_date_release"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/mg_txt_title"
-            android:text="@string/release_date"
-            android:textColor="@android:color/white"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="@id/tv_title_detail"
-            app:layout_constraintTop_toBottomOf="@id/tv_title_detail" />
-
-        <RatingBar
-            android:isIndicator="true"
-            android:id="@+id/rating_film"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/mg_txt_title"
-            android:numStars="10"
-            android:rating="2"
-            android:stepSize="1"
-            android:theme="@style/RatingBar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_date_release" />
-
-        <ScrollView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rating_film">
+            <ImageView
+                android:id="@+id/btn_trailer_back"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="@dimen/mg_txt_title"
+                android:padding="@dimen/mg_txt_title"
+                android:src="@drawable/ic_back"
+                android:tint="@android:color/white" />
 
             <TextView
-                android:id="@+id/tv_release_date"
+                android:id="@+id/tv_tb_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/mg_txt_title"
-                android:text="@string/release_date"
+                android:layout_marginEnd="@dimen/mg_txt_title"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/tv_title_film"
                 android:textColor="@android:color/white"
-                android:textSize="14sp" />
+                android:textSize="18sp"
+                android:textStyle="bold" />
+        </androidx.appcompat.widget.Toolbar>
 
-        </ScrollView>
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <fragment
+                    android:id="@+id/movie_player_detail"
+                    android:name="com.google.android.youtube.player.YouTubePlayerFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:layout_margin="@dimen/mg_txt_title"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_title_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="@dimen/mg_txt_title"
+                    android:layout_marginTop="@dimen/mg_txt_title"
+                    android:layout_marginEnd="@dimen/mg_txt_title"
+                    android:text="@string/tv_title_film"
+                    android:textColor="@color/colorTextTitleFilm"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/movie_player_detail" />
+
+                <TextView
+                    android:id="@+id/tv_date_release"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/mg_txt_title"
+                    android:text="@string/release_date"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="@id/tv_title_detail"
+                    app:layout_constraintTop_toBottomOf="@id/tv_title_detail" />
+
+                <RatingBar
+                    android:id="@+id/rating_film"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/mg_txt_title"
+                    android:isIndicator="true"
+                    android:numStars="10"
+                    android:scaleX=".5"
+                    android:scaleY=".5"
+                    android:stepSize="0.1"
+                    android:theme="@style/RatingBar"
+                    android:transformPivotX="0dp"
+                    android:transformPivotY="0dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_date_release" />
+
+                <ImageView
+                    android:id="@+id/iv_drop_down_overview"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="@dimen/mg_txt_title"
+                    android:padding="@dimen/mg_txt_title"
+                    android:src="@drawable/ic_drop_down"
+                    android:tint="@android:color/white"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_title_overView_detail"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/tv_title_overView_detail" />
+
+                <TextView
+                    android:id="@+id/tv_title_overView_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/mg_txt_title"
+                    android:background="@color/colorBGTxtSearch"
+                    android:padding="@dimen/mg_txt_title"
+                    android:text="@string/overview"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toStartOf="@id/rating_film"
+                    app:layout_constraintTop_toBottomOf="@id/rating_film" />
+
+                <TextView
+                    android:id="@+id/tv_overView_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/mg_txt_title"
+                    android:text="@string/overview"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+                    app:layout_constraintHorizontal_bias="0"
+                    app:layout_constraintStart_toStartOf="@id/rating_film"
+                    app:layout_constraintTop_toBottomOf="@id/tv_title_overView_detail" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_another_trailer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_overView_detail"
+                    tools:itemCount="2"
+                    tools:listitem="@layout/item_trailer" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
 </layout>

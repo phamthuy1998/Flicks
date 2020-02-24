@@ -11,4 +11,5 @@
     <color name="colorBgLauncher">#000</color>
     <color name="colorTextHint">#CCCCCC</color>
     <color name="colorBGTxtSearch">#34494949</color>
+    <color name="colorToolbar">#CC2316</color>
 </resources>

@@ -12,6 +12,7 @@ import thuy.ptithcm.flicks.utils.IMAGE_URL
 
 
 class PosterViewHolder(var movieAdapterEvent: MovieAdapterEvent, itemView: View) : BaseViewHolder<View>(itemView) {
+    override fun bind(position: Int?) {}
 
     override fun bind(movie: Movie?) {
         val multi = MultiTransformation<Bitmap>(

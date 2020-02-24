@@ -13,8 +13,14 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation
 import thuy.ptithcm.flicks.utils.IMAGE_URL
 
 
-class VideoViewHolder(val movieAdapterEvent: MovieAdapterEvent,val context: Context, itemView: View) :
+class VideoViewHolder(
+    val movieAdapterEvent: MovieAdapterEvent,
+    val context: Context,
+    itemView: View
+) :
     BaseViewHolder<View>(itemView) {
+    override fun bind(position: Int?) {}
+
     override fun bind(movie: Movie?) {
 
         val orientation = context.getResources().getConfiguration().orientation

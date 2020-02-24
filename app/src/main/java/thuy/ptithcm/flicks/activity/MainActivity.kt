@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -51,6 +52,9 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
         swipeContainer.setColorSchemeResources(
             R.color.colorLoading
         )
+        // Hidden keyboard
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
         binding()
         setRVLayoutManager()
         addEvent()
@@ -80,6 +84,7 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
 
     override fun onItemMovieClick(item: Movie?) {
         val intent = Intent(this, DetailPosterFilmActivity.getInstance().javaClass)
+        intent.putExtra("movie", item)
         startActivity(intent)
     }
 

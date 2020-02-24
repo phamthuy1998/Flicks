@@ -15,7 +15,7 @@ import thuy.ptithcm.flicks.model.Youtube
 class MovieAdapter(
     private val context: Context,
     private var listMovieInfor: ArrayList<Movie?>? = arrayListOf(),
-    var movieAdapterEvent: MovieAdapterEvent
+        var movieAdapterEvent: MovieAdapterEvent
 ) :
     RecyclerView.Adapter<BaseViewHolder<*>>() {
     companion object {
