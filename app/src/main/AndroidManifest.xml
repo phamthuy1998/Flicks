@@ -25,7 +25,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.DetailPosterFilmActivity" />
+        <activity
+            android:name=".activity.DetailPosterFilmActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait">
+
+        </activity>
         <activity android:name=".activity.MainActivity" />
     </application>
 

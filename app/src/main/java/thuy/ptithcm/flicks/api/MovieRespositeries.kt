@@ -30,6 +30,7 @@ class MovieRespositeries {
                 Log.d("API",message)
             }
         }).setLevel(HttpLoggingInterceptor.Level.BASIC)
+
         var client = OkHttpClient.Builder()
             .addInterceptor(logging)
             .build()

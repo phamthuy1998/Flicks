@@ -5,14 +5,6 @@
     android:layout_height="wrap_content"
     android:background="@color/colorBGItemFilm">
 
-<!--    <com.google.android.youtube.player.YouTubePlayerView-->
-<!--        android:id="@+id/youtube_player"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="250dp"-->
-<!--        android:layout_margin="@dimen/mg_txt_title"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
-
     <ImageView
         android:id="@+id/iv_trailer"
         android:layout_width="match_parent"

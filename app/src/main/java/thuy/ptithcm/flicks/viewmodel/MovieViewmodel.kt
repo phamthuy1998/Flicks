@@ -1,15 +1,12 @@
 package thuy.ptithcm.flicks.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.android.youtube.player.YouTubePlayer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import thuy.ptithcm.flicks.api.MovieRespositeries
 import thuy.ptithcm.flicks.model.Movie
-import thuy.ptithcm.flicks.model.Youtube
 
 class MovieViewmodel : ViewModel() {
 
@@ -24,7 +21,6 @@ class MovieViewmodel : ViewModel() {
     var listTempt = ArrayList<Movie>()
 
     init {
-        Log.d("ptumang", "co khoi tao")
         if (listMovieLiveData.value.isNullOrEmpty())
             getMovie()
     }

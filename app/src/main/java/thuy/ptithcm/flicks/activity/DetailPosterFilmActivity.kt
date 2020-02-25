@@ -1,6 +1,5 @@
 package thuy.ptithcm.flicks.activity
 
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -13,15 +12,16 @@ import com.google.android.youtube.player.YouTubePlayerFragment
 import kotlinx.android.synthetic.main.activity_detail_film.*
 import thuy.ptithcm.flicks.R
 import thuy.ptithcm.flicks.adapter.TrailerAdapter
-import thuy.ptithcm.flicks.adapter.TrailerAdapterEvent
+import thuy.ptithcm.flicks.interface1.TrailerAdapterEvent
 import thuy.ptithcm.flicks.model.Movie
 import thuy.ptithcm.flicks.model.Youtube
 import thuy.ptithcm.flicks.utils.YOUTUBE_API
 import thuy.ptithcm.flicks.viewmodel.TrailerViewmodel
+import android.widget.Toast
 
 
-class DetailPosterFilmActivity : AppCompatActivity(), TrailerAdapterEvent {
-
+class DetailPosterFilmActivity : AppCompatActivity(),
+    TrailerAdapterEvent {
     companion object {
         private var instance: DetailPosterFilmActivity? = null
         fun getInstance(): DetailPosterFilmActivity {
@@ -43,9 +43,9 @@ class DetailPosterFilmActivity : AppCompatActivity(), TrailerAdapterEvent {
 
     lateinit var youTubePlayerG: YouTubePlayer
     private var youTubeInit = false
-    private var count = 0
     private var movie: Movie? = null
     private var showOverview = false
+    private lateinit var youtubeFragment: YouTubePlayerFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +71,8 @@ class DetailPosterFilmActivity : AppCompatActivity(), TrailerAdapterEvent {
     }
 
     private fun inItView() {
-        val youtubeFragment =
+        //annotation
+        youtubeFragment =
             fragmentManager.findFragmentById(R.id.movie_player_detail) as YouTubePlayerFragment
 
         youtubeFragment.initialize(
@@ -80,7 +81,9 @@ class DetailPosterFilmActivity : AppCompatActivity(), TrailerAdapterEvent {
                 override fun onInitializationSuccess(
                     provider: YouTubePlayer.Provider,
                     youTubePlayer: YouTubePlayer, b: Boolean
-                ) { // do any work here to
+                ) {
+                    youTubePlayer.fullscreenControlFlags =
+                        YouTubePlayer.FULLSCREEN_FLAG_CONTROL_ORIENTATION or YouTubePlayer.FULLSCREEN_FLAG_ALWAYS_FULLSCREEN_IN_LANDSCAPE
                     youTubePlayerG = youTubePlayer
                     movie?.id?.let { trailerViewModel.getTrailer(it) }
                 }
@@ -89,49 +92,55 @@ class DetailPosterFilmActivity : AppCompatActivity(), TrailerAdapterEvent {
                     provider: YouTubePlayer.Provider,
                     youTubeInitializationResult: YouTubeInitializationResult
                 ) {
-                }
-            })
+                    val REQUEST_CODE = 1
 
+                    if (youTubeInitializationResult.isUserRecoverableError()) {
+                        youTubeInitializationResult.getErrorDialog(parent, REQUEST_CODE).show()
+                    } else {
+                        val errorMessage = String.format(
+                            "There was an error initializing the YoutubePlayer (%1\$s)",
+                            youTubeInitializationResult.toString()
+                        )
+                        Toast.makeText(applicationContext, errorMessage, Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+        )
     }
 
     private fun addEvents() {
         btn_trailer_back.setOnClickListener {
             finish()
         }
-        val orientation = getResources().getConfiguration().orientation
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            tv_title_overView_detail.setOnClickListener {
-                showOverview = !showOverview
-                if (showOverview) {
-                    tv_overView_detail.visibility = View.VISIBLE
-                } else
-                    tv_overView_detail.visibility = View.GONE
+        tv_title_overView_detail.setOnClickListener {
+            showOverview = !showOverview
+            if (showOverview) {
+                tv_overView_detail.visibility = View.VISIBLE
+            } else {
+                tv_overView_detail.visibility = View.GONE
             }
         }
     }
 
     private fun setInforMovie(movie: Movie?) {
-        val orientation = getResources().getConfiguration().orientation
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            rating_film.numStars = 10
-            rating_film.rating = movie?.vote_average?.toFloat() ?: 0.toFloat()
-            val date_release = getString(R.string.release_date) + " " + movie?.release_date
-            tv_date_release.text = date_release
-            tv_overView_detail.text = movie?.overview
-            tv_tb_title.text = movie?.original_title
-        }
+        rating_film.numStars = 10
+        rating_film.rating = movie?.vote_average?.toFloat() ?: 0.toFloat()
+        val date_release = getString(R.string.release_date) + " " + movie?.release_date
+        tv_date_release.text = date_release
+        tv_overView_detail.text = movie?.overview
+        tv_tb_title.text = movie?.original_title
     }
 
     private fun bindings() {
         trailerViewModel.listTrailerLiveData.observe(this, Observer {
             if (!it.isNullOrEmpty()) {
-                if (count<2) {
+                if (youTubeInit) {
                     youTubePlayerG.cueVideo(it[0].source)
                     tv_title_detail.text = it[0].name
                     listTrailerVideo.addAll(it)
-                    //trailerAdapter.notifyDataSetChanged()
+                    trailerAdapter.notifyDataSetChanged()
                 } else {
-                    count++
+                    youTubeInit = true
                     movie?.id?.let { trailerViewModel.getTrailer(it) }
                 }
             }

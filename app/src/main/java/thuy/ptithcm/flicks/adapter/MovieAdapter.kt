@@ -52,13 +52,13 @@ class MovieAdapter(
 
     override fun getItemViewType(position: Int): Int {
         val comparable = listMovieInfor?.get(position)?.vote_average
-        if (comparable != null) {
-            return when {
+        return if (comparable != null) {
+            when {
                 comparable <= 5 -> TYPE_POSTER
                 comparable > 5 -> TYPE_VIDEO
                 else -> TYPE_POSTER
             }
-        } else return TYPE_POSTER
+        } else TYPE_POSTER
     }
 
     override fun getItemCount(): Int {

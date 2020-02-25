@@ -1,15 +1,12 @@
 package thuy.ptithcm.flicks.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.youtube.player.YouTubePlayer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import okhttp3.internal.notifyAll
 import thuy.ptithcm.flicks.api.MovieRespositeries
-import thuy.ptithcm.flicks.model.Movie
 import thuy.ptithcm.flicks.model.Youtube
 
 class TrailerViewmodel() : ViewModel() {

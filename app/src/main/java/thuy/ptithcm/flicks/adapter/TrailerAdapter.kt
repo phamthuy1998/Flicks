@@ -10,6 +10,7 @@ import com.google.android.youtube.player.YouTubeThumbnailLoader.OnThumbnailLoade
 import com.google.android.youtube.player.YouTubeThumbnailView
 import kotlinx.android.synthetic.main.item_trailer.view.*
 import thuy.ptithcm.flicks.R
+import thuy.ptithcm.flicks.interface1.TrailerAdapterEvent
 import thuy.ptithcm.flicks.model.Movie
 import thuy.ptithcm.flicks.model.Youtube
 import thuy.ptithcm.flicks.utils.YOUTUBE_API
