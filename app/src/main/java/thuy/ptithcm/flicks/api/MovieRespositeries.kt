@@ -41,7 +41,6 @@ class MovieRespositeries {
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .baseUrl(BASE_URL)
                     .client(client)
-                    // chuyen tu gson factory qua json de gui len server va nguoc lai
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
             }

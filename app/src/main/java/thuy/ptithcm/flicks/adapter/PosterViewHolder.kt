@@ -9,6 +9,7 @@ import com.bumptech.glide.request.RequestOptions
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation
 import kotlinx.android.synthetic.main.item_poster.view.*
 import thuy.ptithcm.flicks.interface1.MovieAdapterEvent
+import thuy.ptithcm.flicks.model.Youtube
 import thuy.ptithcm.flicks.utils.IMAGE_URL
 
 
@@ -33,5 +34,8 @@ class PosterViewHolder(var movieAdapterEvent: MovieAdapterEvent, itemView: View)
         itemView.setOnClickListener {
             movieAdapterEvent.onItemMovieClick(movie)
         }
+    }
+
+    override fun bind(trailer: Youtube?) {
     }
 }

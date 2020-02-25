@@ -13,14 +13,14 @@ import com.google.android.youtube.player.YouTubePlayerFragment
 import kotlinx.android.synthetic.main.activity_detail_film.*
 import thuy.ptithcm.flicks.R
 import thuy.ptithcm.flicks.adapter.TrailerAdapter
-import thuy.ptithcm.flicks.interface1.TrailerEvent
+import thuy.ptithcm.flicks.adapter.TrailerAdapterEvent
 import thuy.ptithcm.flicks.model.Movie
 import thuy.ptithcm.flicks.model.Youtube
 import thuy.ptithcm.flicks.utils.YOUTUBE_API
 import thuy.ptithcm.flicks.viewmodel.TrailerViewmodel
 
 
-class DetailPosterFilmActivity : AppCompatActivity(), TrailerEvent {
+class DetailPosterFilmActivity : AppCompatActivity(), TrailerAdapterEvent {
 
     companion object {
         private var instance: DetailPosterFilmActivity? = null
@@ -36,32 +36,37 @@ class DetailPosterFilmActivity : AppCompatActivity(), TrailerEvent {
             .get(TrailerViewmodel::class.java)
     }
 
-    private var movie: Movie? = null
-    private var showOverview = false
+    private var listTrailerVideo = arrayListOf<Youtube>()
+    private val trailerAdapter: TrailerAdapter by lazy {
+        TrailerAdapter(listTrailerVideo, this)
+    }
+
     lateinit var youTubePlayerG: YouTubePlayer
     private var youTubeInit = false
-
-    private val trailerAdapter: TrailerAdapter by lazy {
-        TrailerAdapter(trailerEvent = this, movie = movie)
-    }
+    private var count = 0
+    private var movie: Movie? = null
+    private var showOverview = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_film)
         movie = intent?.getParcelableExtra("movie")
-        movie?.id?.let { trailerViewModel.getTrailer(it) }
 
         inItView()
         bindings()
+        initAdapter()
         setInforMovie(movie)
         addEvents()
     }
 
-    override fun onItemTrailerClick(item: Youtube?) {
-        youTubePlayerG.cueVideo(item?.source)
-        val orientation = getResources().getConfiguration().orientation
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            tv_title_detail.text = item?.name
+    private fun initAdapter() {
+        rv_another_trailer?.run {
+            this.adapter = trailerAdapter
+            this.layoutManager = LinearLayoutManager(
+                context,
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
         }
     }
 
@@ -77,6 +82,7 @@ class DetailPosterFilmActivity : AppCompatActivity(), TrailerEvent {
                     youTubePlayer: YouTubePlayer, b: Boolean
                 ) { // do any work here to
                     youTubePlayerG = youTubePlayer
+                    movie?.id?.let { trailerViewModel.getTrailer(it) }
                 }
 
                 override fun onInitializationFailure(
@@ -86,15 +92,6 @@ class DetailPosterFilmActivity : AppCompatActivity(), TrailerEvent {
                 }
             })
 
-        val orientation = getResources().getConfiguration().orientation
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            rv_another_trailer.layoutManager = LinearLayoutManager(
-                this,
-                LinearLayoutManager.HORIZONTAL,
-                false
-            )
-            rv_another_trailer.adapter = trailerAdapter
-        }
     }
 
     private fun addEvents() {
@@ -114,9 +111,8 @@ class DetailPosterFilmActivity : AppCompatActivity(), TrailerEvent {
     }
 
     private fun setInforMovie(movie: Movie?) {
-        val orientation = resources.getConfiguration().orientation
+        val orientation = getResources().getConfiguration().orientation
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            tv_title_detail.text = movie?.original_title
             rating_film.numStars = 10
             rating_film.rating = movie?.vote_average?.toFloat() ?: 0.toFloat()
             val date_release = getString(R.string.release_date) + " " + movie?.release_date
@@ -129,21 +125,23 @@ class DetailPosterFilmActivity : AppCompatActivity(), TrailerEvent {
     private fun bindings() {
         trailerViewModel.listTrailerLiveData.observe(this, Observer {
             if (!it.isNullOrEmpty()) {
-//                //youTubePlayerG.cueVideo(it[0].source)
-//
-//                if (count==0)
-//                    count ++
-//                else
-//                    youTubePlayerG.cueVideo(it[0].source)
-                if (youTubeInit) {
+                if (count<2) {
                     youTubePlayerG.cueVideo(it[0].source)
-
+                    tv_title_detail.text = it[0].name
+                    listTrailerVideo.addAll(it)
+                    //trailerAdapter.notifyDataSetChanged()
                 } else {
-                    youTubeInit = true
+                    count++
                     movie?.id?.let { trailerViewModel.getTrailer(it) }
                 }
-                trailerAdapter.updateData(it)
             }
         })
+    }
+
+    override fun onItemMovieClick(item: Youtube?) {
+        if (youTubeInit) {
+            youTubePlayerG.cueVideo(item?.source)
+            tv_title_detail.text = item?.name
+        }
     }
 }

@@ -6,17 +6,21 @@ import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import thuy.ptithcm.flicks.R
-import thuy.ptithcm.flicks.adapter.MovieAdapter
-import thuy.ptithcm.flicks.model.Movie
-import thuy.ptithcm.flicks.viewmodel.MovieViewmodel
+import thuy.ptithcm.flicks.adapter.*
 import thuy.ptithcm.flicks.interface1.MovieAdapterEvent
+import thuy.ptithcm.flicks.model.Movie
+import thuy.ptithcm.flicks.model.Youtube
+import thuy.ptithcm.flicks.viewmodel.MovieViewmodel
 
 
 class MainActivity : AppCompatActivity(), MovieAdapterEvent {
@@ -50,6 +54,7 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
         )
         // Hidden keyboard
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
         binding()
         addEvent()
     }
@@ -78,6 +83,7 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
 
         movieViewModel.listMovieLiveData.observe(this, Observer {
             movieAdapter.updateData(it)
+
         })
 
         movieViewModel.listSearchLiveData.observe(this, Observer {
@@ -90,39 +96,11 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
 
     private fun addEvent() {
         swipeContainer.setOnRefreshListener {
-            if (edt_search.text.isNotEmpty()) {
-                movieAdapter.removeAllData()
-                movieViewModel.getMovieSearch(edt_search.text.trim().toString())
-                if (movieAdapter.itemCount == 0) tv_search_null.visibility = View.GONE
-                else tv_search_null.visibility = View.VISIBLE
-            } else {
-                movieViewModel.reFresh()
-            }
-            Handler().postDelayed(
-                {
-                    swipeContainer.isRefreshing = false
-                }, 500
-            )
+          refreshLayout()
         }
         edt_search.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                if (movieAdapter.itemCount == 0) {
-                    tv_search_null.visibility = View.VISIBLE
-                    rv_movies.visibility = View.GONE
-                }
-                else {
-                    tv_search_null.visibility = View.GONE
-                    rv_movies.visibility = View.VISIBLE
-                }
-
-                if (edt_search.text.isNotEmpty()) {
-                    movieAdapter.removeAllData()
-                    movieViewModel.getMovieSearch(edt_search.text.trim().toString())
-                } else {
-                    movieAdapter.removeAllData()
-                    page = 1
-                    movieViewModel.getMovie(page)
-                }
+               searchMovie()
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -131,5 +109,39 @@ class MainActivity : AppCompatActivity(), MovieAdapterEvent {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
         })
+    }
+
+    private fun searchMovie() {
+        if (movieAdapter.itemCount == 0) {
+            tv_search_null.visibility = View.VISIBLE
+            rv_movies.visibility = View.GONE
+        } else {
+            tv_search_null.visibility = View.GONE
+            rv_movies.visibility = View.VISIBLE
+        }
+        if (edt_search.text.isNotEmpty()) {
+            movieAdapter.removeAllData()
+            movieViewModel.getMovieSearch(edt_search.text.trim().toString())
+        } else {
+            movieAdapter.removeAllData()
+            page = 1
+            movieViewModel.getMovie(page)
+        }
+    }
+
+    private fun refreshLayout() {
+        if (edt_search.text.isNotEmpty()) {
+            movieAdapter.removeAllData()
+            movieViewModel.getMovieSearch(edt_search.text.trim().toString())
+            if (movieAdapter.itemCount == 0) tv_search_null.visibility = View.GONE
+            else tv_search_null.visibility = View.VISIBLE
+        } else {
+            movieViewModel.reFresh()
+        }
+        Handler().postDelayed(
+            {
+                swipeContainer.isRefreshing = false
+            }, 500
+        )
     }
 }

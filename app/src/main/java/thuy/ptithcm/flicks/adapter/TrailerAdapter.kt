@@ -4,34 +4,30 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.youtube.player.YouTubeInitializationResult
+import com.google.android.youtube.player.YouTubeThumbnailLoader
+import com.google.android.youtube.player.YouTubeThumbnailLoader.OnThumbnailLoadedListener
+import com.google.android.youtube.player.YouTubeThumbnailView
 import kotlinx.android.synthetic.main.item_trailer.view.*
 import thuy.ptithcm.flicks.R
-import thuy.ptithcm.flicks.interface1.TrailerEvent
 import thuy.ptithcm.flicks.model.Movie
 import thuy.ptithcm.flicks.model.Youtube
-import android.graphics.Bitmap
-import android.util.DisplayMetrics
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.MultiTransformation
-import com.bumptech.glide.request.RequestOptions
-import jp.wasabeef.glide.transformations.RoundedCornersTransformation
-import kotlinx.android.synthetic.main.item_video.view.*
-import thuy.ptithcm.flicks.utils.IMAGE_URL
+import thuy.ptithcm.flicks.utils.YOUTUBE_API
 
 
 class TrailerAdapter(
-    private var listYoutube: ArrayList<Youtube>? = arrayListOf(),
-    private var trailerEvent: TrailerEvent,
-    private var movie: Movie? = null
+    private var listYoutube: ArrayList<Youtube>?,
+    var trailerAdapterEvent: TrailerAdapterEvent
+
 ) : RecyclerView.Adapter<BaseViewHolder<*>>() {
 
-    private var youtube: Youtube? = null
+    private var readyForLoadingYoutubeThumbnail = true
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): BaseViewHolder<*> {
         val view = LayoutInflater
             .from(viewGroup.context)
-            .inflate(R.layout.item_trailer, viewGroup, false);
-        return TrailerViewHolder(view)
+            .inflate(R.layout.item_trailer, viewGroup, false)
+        return TrailerViewHolder(view, trailerAdapterEvent)
     }
 
     override fun getItemCount(): Int {
@@ -39,39 +35,60 @@ class TrailerAdapter(
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder<*>, position: Int) {
-        holder.bind(position)
+        holder.bind(listYoutube?.get(position))
     }
 
-    fun updateData(list: ArrayList<Youtube>) {
-        listYoutube?.addAll(list ?: arrayListOf())
-        notifyDataSetChanged()
-    }
-
-    fun removeAllData() {
-        listYoutube = arrayListOf()
-        notifyDataSetChanged()
-    }
-
-    fun addData(list: ArrayList<Youtube>) {
-        listYoutube = list
-    }
-
-    inner class TrailerViewHolder(view: View) : BaseViewHolder<View>(view) {
+    inner class TrailerViewHolder(
+        view: View, trailerAdapterEvent: TrailerAdapterEvent
+    ) : BaseViewHolder<View>(view) {
         override fun bind(movie: Movie?) {}
 
-        override fun bind(position: Int?) {
-            youtube = position?.let { listYoutube?.get(it) }
-            itemView.tv_title_trailer.text = youtube?.name
-            //set image rounded
-            val multi = MultiTransformation<Bitmap>(
-                RoundedCornersTransformation(7, 0, RoundedCornersTransformation.CornerType.ALL)
-            )
-            Glide.with(itemView)
-                .load(IMAGE_URL + movie?.backdrop_path)
-                .apply(RequestOptions.bitmapTransform(multi))
-                .into(itemView.im_trailer_item)
-            itemView.im_trailer_item.setOnClickListener {trailerEvent.onItemTrailerClick(youtube)}
-            itemView.btn_play_video.setOnClickListener {trailerEvent.onItemTrailerClick(youtube)}
+        override fun bind(position: Int?) {}
+
+        override fun bind(trailer: Youtube?) {
+            itemView.tv_title_trailer.text = trailer?.name
+            itemView.videoThumbnailImageView.setOnClickListener {
+                trailerAdapterEvent.onItemMovieClick(trailer)
+            }
+
+            if (readyForLoadingYoutubeThumbnail) {
+                readyForLoadingYoutubeThumbnail = false;
+                itemView.videoThumbnailImageView.initialize(
+                    YOUTUBE_API,
+                    object : YouTubeThumbnailView.OnInitializedListener {
+                        override fun onInitializationSuccess(
+                            youTubeThumbnailView: YouTubeThumbnailView,
+                            youTubeThumbnailLoader: YouTubeThumbnailLoader
+                        ) {
+                            youTubeThumbnailLoader.setVideo(trailer?.source)
+                            youTubeThumbnailLoader.setOnThumbnailLoadedListener(object :
+                                OnThumbnailLoadedListener {
+                                override fun onThumbnailLoaded(
+                                    youTubeThumbnailView: YouTubeThumbnailView,
+                                    s: String
+                                ) { //when thumbnail loaded successfully release the thumbnail loader as we are showing thumbnail in adapter
+                                    youTubeThumbnailLoader.release()
+                                }
+
+                                override fun onThumbnailError(
+                                    youTubeThumbnailView: YouTubeThumbnailView,
+                                    errorReason: YouTubeThumbnailLoader.ErrorReason
+                                ) {
+                                }
+                            })
+                            readyForLoadingYoutubeThumbnail = true;
+                        }
+
+                        override fun onInitializationFailure(
+                            youTubeThumbnailView: YouTubeThumbnailView,
+                            youTubeInitializationResult: YouTubeInitializationResult
+                        ) {
+                            readyForLoadingYoutubeThumbnail = true;
+                        }
+                    })
+            }
         }
+
     }
+
 }
